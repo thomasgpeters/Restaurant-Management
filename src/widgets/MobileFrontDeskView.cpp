@@ -123,6 +123,7 @@ void MobileFrontDeskView::navigateTo(MobileScreen screen) {
 
     // Clear and rebuild screen
     screenContainer_->clear();
+    screenContainer_->removeStyleClass("m-split-mode");
 
     switch (screen) {
         case MobileScreen::Categories:
@@ -177,6 +178,9 @@ void MobileFrontDeskView::buildMenuBrowserScreen() {
     header->addStyleClass("m-screen-header");
     header->addWidget(std::make_unique<Wt::WText>("Menu"))
         ->addStyleClass("m-screen-title");
+
+    // Mark container for split-mode CSS (fallback for :has())
+    screenContainer_->addStyleClass("m-split-mode");
 
     // Split container: categories left, items right
     auto split = screenContainer_->addWidget(std::make_unique<Wt::WContainerWidget>());

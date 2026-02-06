@@ -950,6 +950,15 @@ body {
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     padding: 0 16px 16px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* When split-panel is inside, container shouldn't scroll — panels scroll */
+.m-screen-container:has(.m-menu-split) {
+    overflow: hidden;
+    padding-bottom: 0;
 }
 
 /* ── Mobile view nav ────────────────────────────────────────────────────── */
@@ -1104,6 +1113,114 @@ body {
     color: var(--color-text-muted);
     flex-shrink: 0;
     opacity: 0.5;
+}
+
+/* ── Split-Panel Menu Browser (tablet only) ────────────────────────────── */
+.m-menu-split {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    gap: 0;
+}
+
+/* Left: category sidebar */
+.m-cat-panel {
+    width: 180px;
+    min-width: 160px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--color-border);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #f8fafc;
+}
+
+.m-cat-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border);
+    transition: background 0.15s;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.04);
+}
+
+.m-cat-item:active {
+    background: #e2e8f0;
+}
+
+.m-cat-item.active {
+    background: #fff;
+    border-left: 3px solid var(--color-primary);
+    font-weight: 600;
+}
+
+.m-cat-name {
+    font-size: 14px;
+    color: var(--color-text);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.m-cat-item.active .m-cat-name {
+    color: var(--color-primary);
+}
+
+.m-cat-count {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    background: #e2e8f0;
+    border-radius: 10px;
+    padding: 2px 8px;
+    flex-shrink: 0;
+    margin-left: 6px;
+}
+
+.m-cat-item.active .m-cat-count {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+}
+
+/* Right: items panel */
+.m-items-panel {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px 16px;
+}
+
+.m-items-panel-title {
+    display: block;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-text);
+    padding: 12px 0 10px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 10px;
+}
+
+/* Portrait tablet: wider category panel, 1-column items */
+@media (orientation: portrait) and (min-width: 600px) {
+    .m-cat-panel {
+        width: 200px;
+    }
+}
+
+/* Landscape tablet: wider sidebar, 2-column item grid */
+@media (orientation: landscape) and (min-width: 900px) {
+    .m-cat-panel {
+        width: 220px;
+    }
+
+    .m-items-panel .m-items-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
 }
 
 /* ── Menu Item Cards ────────────────────────────────────────────────────── */
@@ -1581,9 +1698,9 @@ body {
     max-width: 460px;
 }
 
-/* iPad portrait (768px-1024px): 2-column menu grid */
+/* Tablet portrait (768px+): 2-column grids for non-split views */
 @media (min-width: 768px) {
-    .m-items-list {
+    .m-screen-container > .m-items-list {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
@@ -1604,9 +1721,9 @@ body {
     }
 }
 
-/* iPad landscape (1024px+): 3-column grid */
+/* Tablet landscape (1024px+): 3-column grid for non-split views */
 @media (min-width: 1024px) {
-    .m-items-list {
+    .m-screen-container > .m-items-list {
         grid-template-columns: repeat(3, 1fr);
     }
 }

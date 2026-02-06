@@ -39,6 +39,7 @@ private:
 
     std::shared_ptr<ApiService> api_;
     bool isMobile_ = false;
+    bool isTablet_ = false;  // tablet vs phone (for split-panel vs sequential menu)
 
     // JS -> C++ signal for client-side touch detection
     Wt::JSignal<std::string> touchDetected_;

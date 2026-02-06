@@ -47,28 +47,43 @@ bool RestaurantApp::detectMobileDevice() {
     const std::string& ua = environment().userAgent();
 
     // iPad: older iPads send "iPad"; modern iPadOS sends "Macintosh"
-    if (ua.find("iPad") != std::string::npos)
+    if (ua.find("iPad") != std::string::npos) {
+        isTablet_ = true;
         return true;
+    }
 
-    // Android phones and tablets (when not in desktop mode)
-    if (ua.find("Android") != std::string::npos)
+    // "Tablet" token → definitely a tablet
+    if (ua.find("Tablet") != std::string::npos) {
+        isTablet_ = true;
         return true;
-
-    // Samsung tablets/phones: "SM-" prefix (e.g. SM-T510, SM-G950)
-    if (ua.find("SM-") != std::string::npos)
-        return true;
-
-    // Generic mobile tokens
-    if (ua.find("Mobile") != std::string::npos ||
-        ua.find("Tablet") != std::string::npos ||
-        ua.find("webOS") != std::string::npos ||
-        ua.find("Opera Mini") != std::string::npos ||
-        ua.find("Opera Mobi") != std::string::npos)
-        return true;
+    }
 
     // Silk browser (Amazon Fire tablets)
-    if (ua.find("Silk") != std::string::npos)
+    if (ua.find("Silk") != std::string::npos) {
+        isTablet_ = true;
         return true;
+    }
+
+    // Android: "Mobile" present → phone, absent → tablet
+    if (ua.find("Android") != std::string::npos) {
+        isTablet_ = (ua.find("Mobile") == std::string::npos);
+        return true;
+    }
+
+    // Samsung devices: SM-T = tablet, SM-G/SM-A/SM-S = phone (usually)
+    if (ua.find("SM-") != std::string::npos) {
+        isTablet_ = (ua.find("SM-T") != std::string::npos);
+        return true;
+    }
+
+    // Generic mobile tokens (phones)
+    if (ua.find("Mobile") != std::string::npos ||
+        ua.find("webOS") != std::string::npos ||
+        ua.find("Opera Mini") != std::string::npos ||
+        ua.find("Opera Mobi") != std::string::npos) {
+        isTablet_ = false;
+        return true;
+    }
 
     return false;
 }
@@ -77,8 +92,10 @@ void RestaurantApp::onTouchDetected(const std::string& info) {
     // Called from client-side JS when a touch device is detected that
     // the server-side UA parsing missed (e.g. Samsung desktop mode,
     // modern iPadOS). Only act if we haven't already detected mobile.
+    // JS detection uses screen >= 600px, so this is always a tablet.
     if (!isMobile_) {
         isMobile_ = true;
+        isTablet_ = true;
         root()->addStyleClass("is-mobile");
         if (info.find("ipad") != std::string::npos) {
             root()->addStyleClass("is-ipad");
@@ -294,7 +311,7 @@ void RestaurantApp::showFrontDeskView(long long restaurantId) {
 
     if (isMobile_) {
         workspace_->addWidget(
-            std::make_unique<MobileFrontDeskView>(api_, restaurantId, this));
+            std::make_unique<MobileFrontDeskView>(api_, restaurantId, this, isTablet_));
     } else {
         workspace_->addWidget(std::make_unique<FrontDeskView>(api_, restaurantId));
     }

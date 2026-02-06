@@ -10,8 +10,8 @@
 
 MobileFrontDeskView::MobileFrontDeskView(
     std::shared_ptr<ApiService> api, long long restaurantId,
-    RestaurantApp* app)
-    : api_(api), restaurantId_(restaurantId), app_(app)
+    RestaurantApp* app, bool isTablet)
+    : api_(api), restaurantId_(restaurantId), app_(app), isTablet_(isTablet)
 {
     addStyleClass("m-frontdesk");
 
@@ -127,10 +127,19 @@ void MobileFrontDeskView::navigateTo(MobileScreen screen) {
     switch (screen) {
         case MobileScreen::Categories:
             screenHistory_.clear(); // root screen
-            buildCategoriesScreen();
+            if (isTablet_) {
+                buildMenuBrowserScreen();
+            } else {
+                buildCategoriesScreen();
+            }
             break;
         case MobileScreen::MenuItems:
-            buildMenuItemsScreen();
+            if (isTablet_) {
+                screenHistory_.clear();
+                buildMenuBrowserScreen();
+            } else {
+                buildMenuItemsScreen();
+            }
             break;
         case MobileScreen::Cart:
             buildCartScreen();
@@ -160,10 +169,141 @@ void MobileFrontDeskView::navigateBack() {
     navigateTo(prev);
 }
 
-// ─── Categories Screen ───────────────────────────────────────────────────────
+// ─── Menu Browser (split panel: categories left, items right) ────────────────
+
+void MobileFrontDeskView::buildMenuBrowserScreen() {
+    // Screen header
+    auto header = screenContainer_->addWidget(std::make_unique<Wt::WContainerWidget>());
+    header->addStyleClass("m-screen-header");
+    header->addWidget(std::make_unique<Wt::WText>("Menu"))
+        ->addStyleClass("m-screen-title");
+
+    // Split container: categories left, items right
+    auto split = screenContainer_->addWidget(std::make_unique<Wt::WContainerWidget>());
+    split->addStyleClass("m-menu-split");
+
+    // ── Left: Category list ──
+    auto catPanel = split->addWidget(std::make_unique<Wt::WContainerWidget>());
+    catPanel->addStyleClass("m-cat-panel");
+
+    Wt::Dbo::Transaction t(api_->session());
+    auto categories = api_->getCategories(restaurantId_);
+
+    bool firstCat = true;
+    for (auto& cat : categories) {
+        long long catId = cat.id();
+        std::string catName = cat->name;
+
+        // Auto-select first category if none selected
+        if (firstCat && currentCategoryId_ < 0) {
+            currentCategoryId_ = catId;
+            currentCategoryName_ = catName;
+        }
+
+        auto row = catPanel->addWidget(std::make_unique<Wt::WContainerWidget>());
+        row->addStyleClass("m-cat-item");
+        if (catId == currentCategoryId_) {
+            row->addStyleClass("active");
+        }
+
+        row->addWidget(std::make_unique<Wt::WText>(catName))
+            ->addStyleClass("m-cat-name");
+
+        // Count available items
+        auto items = api_->getMenuItemsByCategory(catId);
+        int availCount = 0;
+        for (auto& item : items) {
+            if (item->available) availCount++;
+        }
+        row->addWidget(std::make_unique<Wt::WText>(std::to_string(availCount)))
+            ->addStyleClass("m-cat-count");
+
+        row->clicked().connect([this, catId, catName] {
+            currentCategoryId_ = catId;
+            currentCategoryName_ = catName;
+            // Rebuild entire browser to update active state and items
+            screenContainer_->clear();
+            buildMenuBrowserScreen();
+        });
+
+        firstCat = false;
+    }
+
+    // ── Right: Items panel ──
+    itemsPanel_ = split->addWidget(std::make_unique<Wt::WContainerWidget>());
+    itemsPanel_->addStyleClass("m-items-panel");
+
+    refreshItemsPanel();
+}
+
+void MobileFrontDeskView::showCategoryItems(
+    long long categoryId, const std::string& categoryName)
+{
+    currentCategoryId_ = categoryId;
+    currentCategoryName_ = categoryName;
+    // Rebuild the browser screen to update active category + items
+    screenContainer_->clear();
+    buildMenuBrowserScreen();
+}
+
+void MobileFrontDeskView::refreshItemsPanel() {
+    if (!itemsPanel_) return;
+    itemsPanel_->clear();
+
+    if (currentCategoryId_ < 0) {
+        auto empty = itemsPanel_->addWidget(std::make_unique<Wt::WContainerWidget>());
+        empty->addStyleClass("m-empty-state");
+        empty->addWidget(std::make_unique<Wt::WText>("Select a category"))
+            ->addStyleClass("m-empty-title");
+        return;
+    }
+
+    // Category title above items
+    itemsPanel_->addWidget(std::make_unique<Wt::WText>(currentCategoryName_))
+        ->addStyleClass("m-items-panel-title");
+
+    auto list = itemsPanel_->addWidget(std::make_unique<Wt::WContainerWidget>());
+    list->addStyleClass("m-items-list");
+
+    Wt::Dbo::Transaction t(api_->session());
+    auto items = api_->getMenuItemsByCategory(currentCategoryId_);
+
+    for (auto& item : items) {
+        if (!item->available) continue;
+
+        long long itemId = item.id();
+        std::string itemName = item->name;
+        std::string itemDesc = item->description;
+        double itemPrice = item->price;
+
+        auto card = list->addWidget(std::make_unique<Wt::WContainerWidget>());
+        card->addStyleClass("m-item-card");
+
+        auto info = card->addWidget(std::make_unique<Wt::WContainerWidget>());
+        info->addStyleClass("m-item-info");
+
+        info->addWidget(std::make_unique<Wt::WText>(itemName))
+            ->addStyleClass("m-item-name");
+        info->addWidget(std::make_unique<Wt::WText>(itemDesc))
+            ->addStyleClass("m-item-desc");
+
+        std::stringstream ss;
+        ss << "$" << std::fixed << std::setprecision(2) << itemPrice;
+        info->addWidget(std::make_unique<Wt::WText>(ss.str()))
+            ->addStyleClass("m-item-price");
+
+        auto addBtn = card->addWidget(
+            std::make_unique<Wt::WPushButton>("+ Add"));
+        addBtn->addStyleClass("m-add-btn");
+        addBtn->clicked().connect([this, itemId, itemName, itemPrice] {
+            addToCart(itemId, itemName, itemPrice);
+        });
+    }
+}
+
+// ─── Phone: Categories Screen (sequential flow) ─────────────────────────────
 
 void MobileFrontDeskView::buildCategoriesScreen() {
-    // Screen header
     auto header = screenContainer_->addWidget(std::make_unique<Wt::WContainerWidget>());
     header->addStyleClass("m-screen-header");
     header->addWidget(std::make_unique<Wt::WText>("Menu Categories"))
@@ -179,7 +319,6 @@ void MobileFrontDeskView::buildCategoriesScreen() {
         long long catId = cat.id();
         std::string catName = cat->name;
 
-        // Count available items
         auto items = api_->getMenuItemsByCategory(catId);
         int availCount = 0;
         for (auto& item : items) {
@@ -208,18 +347,9 @@ void MobileFrontDeskView::buildCategoriesScreen() {
     }
 }
 
-void MobileFrontDeskView::showCategoryItems(
-    long long categoryId, const std::string& categoryName)
-{
-    currentCategoryId_ = categoryId;
-    currentCategoryName_ = categoryName;
-    navigateTo(MobileScreen::MenuItems);
-}
-
-// ─── Menu Items Screen ───────────────────────────────────────────────────────
+// ─── Phone: Menu Items Screen (sequential flow) ─────────────────────────────
 
 void MobileFrontDeskView::buildMenuItemsScreen() {
-    // Screen header with back button
     auto header = screenContainer_->addWidget(std::make_unique<Wt::WContainerWidget>());
     header->addStyleClass("m-screen-header");
 

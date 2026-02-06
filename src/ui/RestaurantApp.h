@@ -24,7 +24,10 @@ private:
     void showKitchenView(long long restaurantId);
     void logout();
 
+    bool detectMobileDevice();
+
     std::shared_ptr<ApiService> api_;
+    bool isMobile_ = false;
 
     // Layout elements
     Wt::WContainerWidget* header_ = nullptr;

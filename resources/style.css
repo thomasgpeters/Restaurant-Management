@@ -835,3 +835,715 @@ body {
         padding: 10px;
     }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Mobile Front Desk View (iPad and touch devices)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Mobile app shell ───────────────────────────────────────────────────── */
+.m-frontdesk {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--header-height) - var(--footer-height) - 60px);
+    position: relative;
+}
+
+.m-screen-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px 16px;
+}
+
+/* ── Mobile view nav ────────────────────────────────────────────────────── */
+.m-view-nav {
+    margin-bottom: 0;
+    padding: 4px 0;
+    justify-content: flex-end;
+}
+
+.m-logout-btn {
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* ── Bottom Tab Bar ─────────────────────────────────────────────────────── */
+.m-tab-bar {
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    padding: 4px 0;
+    flex-shrink: 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 50;
+}
+
+.m-tab {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 4px;
+    color: var(--color-text-muted);
+    transition: color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 56px;
+}
+
+.m-tab.active {
+    color: var(--color-primary);
+}
+
+.m-tab-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 11px;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.m-tab-icon-wrap {
+    position: relative;
+    display: inline-flex;
+}
+
+.m-cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: var(--color-danger);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 9px;
+    padding: 0 4px;
+}
+
+/* ── Screen Headers ─────────────────────────────────────────────────────── */
+.m-screen-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 0 12px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 12px;
+}
+
+.m-screen-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text);
+    flex: 1;
+}
+
+.m-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    background: transparent;
+    border: none;
+    color: var(--color-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 8px 4px;
+    -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
+}
+
+.m-header-action-btn {
+    background: var(--color-info);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* ── List Items (Category rows) ─────────────────────────────────────────── */
+.m-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.m-list-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: background 0.15s;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.04);
+}
+
+.m-list-item:active {
+    background: #f1f5f9;
+}
+
+.m-list-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.m-list-item-title {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.m-list-item-subtitle {
+    display: block;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+.m-list-chevron {
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+    opacity: 0.5;
+}
+
+/* ── Menu Item Cards ────────────────────────────────────────────────────── */
+.m-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.m-item-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 14px;
+    transition: border-color 0.15s;
+}
+
+.m-item-card:active {
+    border-color: var(--color-primary);
+}
+
+.m-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.m-item-name {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.m-item-desc {
+    display: block;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+    margin-top: 2px;
+}
+
+.m-item-price {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-success);
+    margin-top: 4px;
+}
+
+.m-add-btn {
+    flex-shrink: 0;
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    min-width: 72px;
+    min-height: 44px;
+}
+
+.m-add-btn:active {
+    background: var(--color-primary-dark);
+}
+
+/* ── Cart Screen ────────────────────────────────────────────────────────── */
+.m-cart-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.m-cart-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.m-cart-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.m-cart-item-name {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.m-cart-item-price {
+    display: block;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+/* ── Quantity Stepper ───────────────────────────────────────────────────── */
+.m-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.m-stepper-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: #f8fafc;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.m-stepper-btn:active {
+    background: #e2e8f0;
+}
+
+.m-stepper-value {
+    min-width: 36px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* ── Cart Footer ────────────────────────────────────────────────────────── */
+.m-cart-footer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 2px solid var(--color-border);
+}
+
+.m-cart-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.m-cart-total-label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.m-cart-total-amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* ── Action Buttons (mobile) ────────────────────────────────────────────── */
+.m-action-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    margin-bottom: 10px;
+    min-height: 52px;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.15s;
+}
+
+.m-action-btn:active {
+    opacity: 0.85;
+}
+
+.m-btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.m-btn-secondary {
+    background: #f1f5f9;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.m-btn-success {
+    background: var(--color-success);
+    color: #fff;
+}
+
+.m-action-btn-sm {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.m-place-order-btn {
+    margin-top: 20px;
+}
+
+/* ── Order Form ─────────────────────────────────────────────────────────── */
+.m-form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.m-form-group {
+    margin-bottom: 14px;
+}
+
+.m-form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.m-form-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    font-size: 16px;
+    background: #fff;
+    -webkit-appearance: none;
+    transition: border-color 0.15s;
+}
+
+.m-form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* ── Order Summary ──────────────────────────────────────────────────────── */
+.m-order-summary {
+    background: #f8fafc;
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-top: 8px;
+}
+
+.m-summary-title {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-muted);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.m-summary-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+}
+
+.m-summary-item {
+    font-size: 14px;
+}
+
+.m-summary-price {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.m-summary-total {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 2px solid var(--color-border);
+}
+
+.m-summary-total .m-summary-item {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.m-summary-total .m-summary-price {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--color-primary);
+}
+
+/* ── Empty State ────────────────────────────────────────────────────────── */
+.m-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.m-empty-icon {
+    margin-bottom: 16px;
+}
+
+.m-empty-title {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 6px;
+}
+
+.m-empty-subtitle {
+    display: block;
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin-bottom: 24px;
+}
+
+/* ── Confirmation Screen ────────────────────────────────────────────────── */
+.m-confirmation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.m-confirm-icon {
+    margin-bottom: 20px;
+}
+
+.m-confirm-title {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-success);
+    margin-bottom: 8px;
+}
+
+.m-confirm-subtitle {
+    display: block;
+    font-size: 15px;
+    color: var(--color-text-muted);
+    margin-bottom: 32px;
+}
+
+/* ── Active Orders (mobile) ─────────────────────────────────────────────── */
+.m-orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.m-order-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 14px;
+}
+
+.m-order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.m-order-id {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.m-order-table-num {
+    display: block;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+.m-status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.m-order-items {
+    margin-bottom: 8px;
+}
+
+.m-order-item-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 14px;
+}
+
+.m-order-item-price {
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.m-order-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-border);
+}
+
+.m-order-total {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Mobile-specific overrides (iPad + touch devices)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* When .is-mobile is on the root, adjust the app chrome */
+.is-mobile .app-workspace {
+    padding: 8px 0;
+    padding-bottom: calc(var(--footer-height) + 8px);
+    max-width: 100%;
+}
+
+.is-mobile .app-footer {
+    font-size: 10px;
+    height: 28px;
+}
+
+.is-mobile .login-panel {
+    margin: 20px 16px;
+    padding: 28px 24px;
+}
+
+/* iPad portrait (768px-1024px): 2-column menu grid */
+@media (min-width: 768px) {
+    .m-items-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .m-orders-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .m-empty-state {
+        padding: 80px 40px;
+    }
+
+    .m-confirmation {
+        padding: 80px 40px;
+    }
+}
+
+/* iPad landscape (1024px+): 3-column grid */
+@media (min-width: 1024px) {
+    .m-items-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* iPad-specific touch target adjustments */
+@media (pointer: coarse) {
+    .m-list-item {
+        min-height: 60px;
+    }
+
+    .m-add-btn {
+        min-height: 48px;
+        min-width: 80px;
+    }
+
+    .m-stepper-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    .m-action-btn {
+        min-height: 54px;
+    }
+
+    .m-tab {
+        min-height: 60px;
+    }
+
+    .m-form-input {
+        padding: 14px 16px;
+        font-size: 16px;  /* prevents iOS zoom on focus */
+    }
+}

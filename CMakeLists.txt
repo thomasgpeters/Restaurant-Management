@@ -42,6 +42,7 @@ set(SOURCES
     src/ui/RestaurantApp.cpp
     src/widgets/ManagerView.cpp
     src/widgets/FrontDeskView.cpp
+    src/widgets/MobileFrontDeskView.cpp
     src/widgets/KitchenView.cpp
 )
 

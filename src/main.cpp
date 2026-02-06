@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
         // Store for access in application factory
         RestaurantApp::sharedApiService = apiService;
 
-        Wt::WServer server(argc, argv, WTHTTP_CONFIGURATION);
+        Wt::WServer server(argc, argv);
 
         server.addEntryPoint(
             Wt::EntryPointType::Application,

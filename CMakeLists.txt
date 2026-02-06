@@ -49,7 +49,6 @@ set(SOURCES
 add_executable(restaurant_pos ${SOURCES})
 
 target_include_directories(restaurant_pos PRIVATE
-    ${WT_INCLUDE_DIR}
     ${SQLITE3_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/src
@@ -65,9 +64,11 @@ target_link_libraries(restaurant_pos PRIVATE
     pthread
 )
 
-# ─── WTHTTP configuration define ─────────────────────────────────────────────
-target_compile_definitions(restaurant_pos PRIVATE
-    WTHTTP_CONFIGURATION="${CMAKE_SOURCE_DIR}/wt_config.xml"
+# ─── Suppress warnings from Wt headers ───────────────────────────────────────
+# Wt's WConfig.h defines WTHTTP_CONFIGURATION and WLogger.h uses sprintf;
+# treat Wt include dir as a SYSTEM include to suppress these warnings.
+target_include_directories(restaurant_pos SYSTEM PRIVATE
+    ${WT_INCLUDE_DIR}
 )
 
 # ─── Copy resources to build directory ────────────────────────────────────────

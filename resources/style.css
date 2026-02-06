@@ -1478,14 +1478,25 @@ body {
     max-width: 100%;
 }
 
+/* Center login panel vertically & horizontally on mobile */
+.is-mobile .app-workspace:has(.login-panel) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+}
+
 .is-mobile .app-footer {
     font-size: 10px;
     height: 28px;
 }
 
 .is-mobile .login-panel {
-    margin: 20px 16px;
+    margin: auto;
     padding: 28px 24px;
+    width: calc(100% - 32px);
+    max-width: 460px;
 }
 
 /* iPad portrait (768px-1024px): 2-column menu grid */

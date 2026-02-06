@@ -2,6 +2,7 @@
 
 #include <Wt/WApplication.h>
 #include <Wt/WContainerWidget.h>
+#include <Wt/WJavaScript.h>
 #include <Wt/WStackedWidget.h>
 #include <Wt/WText.h>
 #include <memory>
@@ -25,9 +26,13 @@ private:
     void logout();
 
     bool detectMobileDevice();
+    void onTouchDetected(const std::string& info);
 
     std::shared_ptr<ApiService> api_;
     bool isMobile_ = false;
+
+    // JS -> C++ signal for client-side touch detection
+    Wt::JSignal<std::string> touchDetected_;
 
     // Layout elements
     Wt::WContainerWidget* header_ = nullptr;

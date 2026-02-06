@@ -17,11 +17,12 @@ std::shared_ptr<ApiService> RestaurantApp::sharedApiService = nullptr;
 
 RestaurantApp::RestaurantApp(const Wt::WEnvironment& env,
                              std::shared_ptr<ApiService> apiService)
-    : Wt::WApplication(env), api_(apiService)
+    : Wt::WApplication(env), api_(apiService),
+      touchDetected_(this, "touchDetected")
 {
     setTitle("Restaurant POS System");
 
-    // Detect device type from User-Agent
+    // Detect device type from User-Agent (catches most cases)
     isMobile_ = detectMobileDevice();
 
     // Use custom stylesheet
@@ -32,6 +33,9 @@ RestaurantApp::RestaurantApp(const Wt::WEnvironment& env,
         root()->addStyleClass("is-mobile");
     }
 
+    // Connect JS->C++ signal for client-side touch detection callback
+    touchDetected_.connect(this, &RestaurantApp::onTouchDetected);
+
     setupLayout();
     showLoginScreen();
 }
@@ -39,42 +43,75 @@ RestaurantApp::RestaurantApp(const Wt::WEnvironment& env,
 bool RestaurantApp::detectMobileDevice() {
     const std::string& ua = environment().userAgent();
 
-    // iPad detection: Modern iPads send "Macintosh" UA but are touch devices;
-    // older iPads send "iPad" in the UA string.
+    // iPad: older iPads send "iPad"; modern iPadOS sends "Macintosh"
     if (ua.find("iPad") != std::string::npos)
         return true;
 
-    // Modern iPadOS identifies as Macintosh + touch. We detect via
-    // the "Macintosh" token combined with being a touch device.
-    // Wt provides screen dimensions we can check as a fallback.
-    if (ua.find("Macintosh") != std::string::npos) {
-        // If the screen width hints at a tablet, treat it as mobile.
-        // This catches modern iPadOS which masquerades as macOS Safari.
-        // We'll rely on CSS media queries + JS detection as the final guard.
-    }
+    // Android phones and tablets (when not in desktop mode)
+    if (ua.find("Android") != std::string::npos)
+        return true;
 
-    // Standard mobile/tablet tokens
+    // Samsung tablets/phones: "SM-" prefix (e.g. SM-T510, SM-G950)
+    if (ua.find("SM-") != std::string::npos)
+        return true;
+
+    // Generic mobile tokens
     if (ua.find("Mobile") != std::string::npos ||
-        ua.find("Android") != std::string::npos ||
-        ua.find("webOS") != std::string::npos)
+        ua.find("Tablet") != std::string::npos ||
+        ua.find("webOS") != std::string::npos ||
+        ua.find("Opera Mini") != std::string::npos ||
+        ua.find("Opera Mobi") != std::string::npos)
+        return true;
+
+    // Silk browser (Amazon Fire tablets)
+    if (ua.find("Silk") != std::string::npos)
         return true;
 
     return false;
+}
+
+void RestaurantApp::onTouchDetected(const std::string& info) {
+    // Called from client-side JS when a touch device is detected that
+    // the server-side UA parsing missed (e.g. Samsung desktop mode,
+    // modern iPadOS). Only act if we haven't already detected mobile.
+    if (!isMobile_) {
+        isMobile_ = true;
+        root()->addStyleClass("is-mobile");
+        if (info.find("ipad") != std::string::npos) {
+            root()->addStyleClass("is-ipad");
+        }
+        // Re-render the login screen so the user gets mobile routing
+        if (currentRole_.empty()) {
+            showLoginScreen();
+        }
+    }
 }
 
 void RestaurantApp::setupLayout() {
     auto body = root();
     body->addStyleClass("app-body");
 
-    // Client-side detection for modern iPadOS (reports as Macintosh + touch)
-    // This adds the 'is-mobile' class via JS if touch is detected on a
-    // Macintosh UA, catching iPadOS 13+ which masquerades as desktop Safari.
+    // Client-side touch detection: catches tablets in desktop mode
+    // (Samsung desktop mode, modern iPadOS reporting as Macintosh, etc.)
+    // Uses touch capability + screen size to determine if this is a tablet.
+    // Fires a JSignal back to the server so we can switch to mobile views.
     doJavaScript(
-        "if (navigator.userAgent.indexOf('Macintosh') !== -1 && "
-        "'ontouchend' in document) {"
-        "  document.body.classList.add('is-mobile');"
-        "  document.body.classList.add('is-ipad');"
-        "}");
+        "(function(){"
+        "  var isTouch = ('ontouchstart' in window) || "
+        "    (navigator.maxTouchPoints > 0) || "
+        "    (navigator.msMaxTouchPoints > 0);"
+        "  if (!isTouch) return;"
+        "  var w = Math.min(screen.width, screen.height);"
+        "  if (w >= 600) {"  // tablet-sized screen (600px+ shortest side)
+        "    document.body.classList.add('is-mobile');"
+        "    var info = 'touch';"
+        "    if (navigator.userAgent.indexOf('Macintosh') !== -1) {"
+        "      document.body.classList.add('is-ipad');"
+        "      info = 'ipad';"
+        "    }"
+        "    " + touchDetected_.createCall({"info"}) + ";"
+        "  }"
+        "})();");
 
     // Header
     header_ = body->addWidget(std::make_unique<Wt::WContainerWidget>());

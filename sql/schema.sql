@@ -1,13 +1,34 @@
 -- ============================================================================
 -- Restaurant POS System - PostgreSQL Schema
+-- Requires: PostgreSQL 9.5+ (uses ON CONFLICT)
 -- ============================================================================
--- Use with ApiLogicServer:
---   1. Run this script to create the schema:  psql -d <dbname> -f schema.sql
---   2. Seed data with one of:                 psql -d <dbname> -f seed_thai.sql
---                                              psql -d <dbname> -f seed_chinese.sql
---                                              psql -d <dbname> -f seed_sandwich.sql
---   3. Point ApiLogicServer at the database:  als create --db-url=postgresql://...
+--
+-- Usage with psql:
+--   psql -d <dbname> -f schema.sql
+--
+-- Usage with pgAdmin:
+--   Open Query Tool → paste this file → click Execute (F5)
+--
+-- After schema creation, seed with ONE of:
+--   psql -d <dbname> -f seed_thai.sql
+--   psql -d <dbname> -f seed_chinese.sql
+--   psql -d <dbname> -f seed_sandwich.sql
+--
+-- Then point ApiLogicServer:
+--   als create --project-name=restaurant_pos --db-url=postgresql://user:pw@host/dbname
+--
 -- ============================================================================
+
+BEGIN;
+
+-- ── Uncomment the block below to DROP and re-create all tables ──────────
+-- DROP TABLE IF EXISTS order_item CASCADE;
+-- DROP TABLE IF EXISTS orders CASCADE;
+-- DROP TABLE IF EXISTS menu_item CASCADE;
+-- DROP TABLE IF EXISTS category CASCADE;
+-- DROP TABLE IF EXISTS app_user CASCADE;
+-- DROP TABLE IF EXISTS site_config CASCADE;
+-- DROP TABLE IF EXISTS restaurant CASCADE;
 
 -- Restaurant
 CREATE TABLE IF NOT EXISTS restaurant (
@@ -37,7 +58,7 @@ CREATE TABLE IF NOT EXISTS menu_item (
 );
 CREATE INDEX IF NOT EXISTS idx_menu_item_category ON menu_item(category_id);
 
--- Orders (table name "orders" to avoid SQL reserved word)
+-- Orders (table name "orders" avoids the SQL reserved word "order")
 CREATE TABLE IF NOT EXISTS orders (
     id              SERIAL PRIMARY KEY,
     table_number    INTEGER       NOT NULL DEFAULT 0,
@@ -79,9 +100,11 @@ CREATE TABLE IF NOT EXISTS site_config (
     config_value    TEXT          NOT NULL DEFAULT ''
 );
 
--- Default site config entries
+-- Default site config entries (safe to re-run)
 INSERT INTO site_config (config_key, config_value) VALUES
     ('store_name',    ''),
     ('store_logo',    ''),
     ('api_base_url',  'http://localhost:5656/api')
 ON CONFLICT (config_key) DO NOTHING;
+
+COMMIT;

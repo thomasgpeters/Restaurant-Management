@@ -65,10 +65,13 @@ target_link_libraries(restaurant_pos PRIVATE
 )
 
 # ─── Suppress warnings from Wt headers ───────────────────────────────────────
-# Wt's WConfig.h defines WTHTTP_CONFIGURATION and WLogger.h uses sprintf;
-# treat Wt include dir as a SYSTEM include to suppress these warnings.
+# Wt's WLogger.h uses deprecated sprintf; suppress across GCC and Clang.
+# SYSTEM includes alone aren't enough on macOS Clang due to transitive headers.
 target_include_directories(restaurant_pos SYSTEM PRIVATE
     ${WT_INCLUDE_DIR}
+)
+target_compile_options(restaurant_pos PRIVATE
+    -Wno-deprecated-declarations
 )
 
 # ─── Copy resources to build directory ────────────────────────────────────────

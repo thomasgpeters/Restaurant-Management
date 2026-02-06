@@ -1,0 +1,20 @@
+# Build
+build/
+cmake-build-*/
+*.o
+*.so
+*.a
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Database
+*.db
+
+# OS
+.DS_Store
+Thumbs.db

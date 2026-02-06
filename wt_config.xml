@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+    <application-settings location="*">
+        <session-management>
+            <dedicated-process>
+                <max-num-sessions>100</max-num-sessions>
+            </dedicated-process>
+            <timeout>600</timeout>
+        </session-management>
+        <connector-isapi>
+            <num-threads>10</num-threads>
+        </connector-isapi>
+        <debug>false</debug>
+    </application-settings>
+</server>

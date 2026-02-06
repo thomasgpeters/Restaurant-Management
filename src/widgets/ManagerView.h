@@ -6,24 +6,31 @@
 #include <Wt/WPushButton.h>
 #include <Wt/WComboBox.h>
 #include <Wt/WCheckBox.h>
+#include <Wt/WLineEdit.h>
+#include <Wt/WTabWidget.h>
 #include <memory>
 
 #include "../services/ApiService.h"
 
+class RestaurantApp;
+
 class ManagerView : public Wt::WContainerWidget {
 public:
-    ManagerView(std::shared_ptr<ApiService> api, long long restaurantId);
+    ManagerView(std::shared_ptr<ApiService> api, long long restaurantId,
+                RestaurantApp* app = nullptr);
 
 private:
     void buildDashboard(Wt::WContainerWidget* parent);
     void buildOrdersPanel(Wt::WContainerWidget* parent);
     void buildMenuPanel(Wt::WContainerWidget* parent);
+    void buildConfigPanel(Wt::WContainerWidget* parent);
     void refreshDashboard();
     void refreshOrders();
     void refreshMenu();
 
     std::shared_ptr<ApiService> api_;
     long long restaurantId_;
+    RestaurantApp* app_ = nullptr;
 
     // Dashboard stat widgets
     Wt::WText* statTotalOrders_ = nullptr;
@@ -33,4 +40,10 @@ private:
 
     Wt::WContainerWidget* ordersContainer_ = nullptr;
     Wt::WContainerWidget* menuContainer_ = nullptr;
+
+    // Config form fields
+    Wt::WLineEdit* configStoreName_ = nullptr;
+    Wt::WLineEdit* configStoreLogo_ = nullptr;
+    Wt::WLineEdit* configApiUrl_ = nullptr;
+    Wt::WText* configStatus_ = nullptr;
 };

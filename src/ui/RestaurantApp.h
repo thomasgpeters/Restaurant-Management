@@ -2,6 +2,7 @@
 
 #include <Wt/WApplication.h>
 #include <Wt/WContainerWidget.h>
+#include <Wt/WImage.h>
 #include <Wt/WJavaScript.h>
 #include <Wt/WPushButton.h>
 #include <Wt/WStackedWidget.h>
@@ -10,13 +11,16 @@
 #include <memory>
 
 #include "../services/ApiService.h"
+#include "../services/SiteConfig.h"
 
 class RestaurantApp : public Wt::WApplication {
 public:
     RestaurantApp(const Wt::WEnvironment& env,
-                  std::shared_ptr<ApiService> apiService);
+                  std::shared_ptr<ApiService> apiService,
+                  std::shared_ptr<SiteConfig> siteConfig);
 
     static std::shared_ptr<ApiService> sharedApiService;
+    static std::shared_ptr<SiteConfig> sharedSiteConfig;
 
     // Called by MobileFrontDeskView to update the header cart bubble
     void updateHeaderCart(int itemCount, double total);
@@ -24,6 +28,11 @@ public:
 
     // Called by MobileFrontDeskView to register itself for header cart clicks
     void setCartClickTarget(std::function<void()> callback);
+
+    // Refresh header branding from SiteConfig (called after config save)
+    void refreshHeaderBranding();
+
+    std::shared_ptr<SiteConfig> siteConfig() const { return siteConfig_; }
 
 private:
     void setupLayout();
@@ -38,6 +47,7 @@ private:
     void onTouchDetected(const std::string& info);
 
     std::shared_ptr<ApiService> api_;
+    std::shared_ptr<SiteConfig> siteConfig_;
     bool isMobile_ = false;
     bool isTablet_ = false;  // tablet vs phone (for split-panel vs sequential menu)
 
@@ -48,6 +58,7 @@ private:
     Wt::WContainerWidget* header_ = nullptr;
     Wt::WContainerWidget* workspace_ = nullptr;
     Wt::WContainerWidget* footer_ = nullptr;
+    Wt::WImage* headerLogo_ = nullptr;
     Wt::WText* headerTitle_ = nullptr;
     Wt::WText* headerUserInfo_ = nullptr;
 

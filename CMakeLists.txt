@@ -39,6 +39,7 @@ find_package(Boost REQUIRED COMPONENTS filesystem thread)
 set(SOURCES
     src/main.cpp
     src/services/ApiService.cpp
+    src/services/SiteConfig.cpp
     src/ui/RestaurantApp.cpp
     src/widgets/ManagerView.cpp
     src/widgets/FrontDeskView.cpp

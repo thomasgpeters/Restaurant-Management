@@ -17,10 +17,12 @@
 #include "../widgets/KitchenView.h"
 
 std::shared_ptr<ApiService> RestaurantApp::sharedApiService = nullptr;
+std::shared_ptr<SiteConfig> RestaurantApp::sharedSiteConfig = nullptr;
 
 RestaurantApp::RestaurantApp(const Wt::WEnvironment& env,
-                             std::shared_ptr<ApiService> apiService)
-    : Wt::WApplication(env), api_(apiService),
+                             std::shared_ptr<ApiService> apiService,
+                             std::shared_ptr<SiteConfig> siteConfig)
+    : Wt::WApplication(env), api_(apiService), siteConfig_(siteConfig),
       touchDetected_(this, "touchDetected"),
       themeChanged_(this, "themeChanged")
 {
@@ -171,8 +173,19 @@ void RestaurantApp::setupLayout() {
     auto headerInner = header_->addWidget(std::make_unique<Wt::WContainerWidget>());
     headerInner->addStyleClass("header-inner");
 
-    headerTitle_ = headerInner->addWidget(std::make_unique<Wt::WText>("Restaurant POS"));
+    // Branding group: [logo] [title]
+    auto brandGroup = headerInner->addWidget(std::make_unique<Wt::WContainerWidget>());
+    brandGroup->addStyleClass("header-brand");
+
+    headerLogo_ = brandGroup->addWidget(std::make_unique<Wt::WImage>());
+    headerLogo_->addStyleClass("header-logo");
+    headerLogo_->setHidden(true);
+
+    headerTitle_ = brandGroup->addWidget(std::make_unique<Wt::WText>("Restaurant POS"));
     headerTitle_->addStyleClass("header-title");
+
+    // Apply store branding from config
+    refreshHeaderBranding();
 
     // Right-side controls group: [cart bubble] [logout] [user info]
     headerControls_ = headerInner->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -337,7 +350,7 @@ void RestaurantApp::showManagerView(long long restaurantId) {
     headerLogoutBtn_->setHidden(false);
     headerCartBubble_->setHidden(true);
 
-    workspace_->addWidget(std::make_unique<ManagerView>(api_, restaurantId));
+    workspace_->addWidget(std::make_unique<ManagerView>(api_, restaurantId, this));
 }
 
 void RestaurantApp::showFrontDeskView(long long restaurantId) {
@@ -393,6 +406,30 @@ void RestaurantApp::setHeaderCartVisible(bool visible) {
 
 void RestaurantApp::setCartClickTarget(std::function<void()> callback) {
     cartClickCallback_ = std::move(callback);
+}
+
+void RestaurantApp::refreshHeaderBranding() {
+    if (!siteConfig_) return;
+
+    std::string name = siteConfig_->storeName();
+    std::string logo = siteConfig_->storeLogo();
+
+    // Update title
+    if (!name.empty()) {
+        headerTitle_->setText(name);
+        setTitle(name + " - POS System");
+    } else {
+        headerTitle_->setText("Restaurant POS");
+        setTitle("Restaurant POS System");
+    }
+
+    // Update logo
+    if (!logo.empty()) {
+        headerLogo_->setImageLink(Wt::WLink(logo));
+        headerLogo_->setHidden(false);
+    } else {
+        headerLogo_->setHidden(true);
+    }
 }
 
 void RestaurantApp::onThemeChanged(const std::string& theme) {

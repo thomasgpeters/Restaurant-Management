@@ -3,12 +3,16 @@
 
 #include "ui/RestaurantApp.h"
 #include "services/ApiService.h"
+#include "services/SiteConfig.h"
 
 #include <memory>
 #include <iostream>
 
 int main(int argc, char** argv) {
     try {
+        // Initialize shared site configuration
+        auto siteConfig = std::make_shared<SiteConfig>("data/site-config.json");
+
         // Initialize shared API service (single DB connection for the process)
         auto apiService = std::make_shared<ApiService>("restaurant_pos.db");
         apiService->initializeDatabase();
@@ -16,13 +20,14 @@ int main(int argc, char** argv) {
 
         // Store for access in application factory
         RestaurantApp::sharedApiService = apiService;
+        RestaurantApp::sharedSiteConfig = siteConfig;
 
         Wt::WServer server(argc, argv);
 
         server.addEntryPoint(
             Wt::EntryPointType::Application,
-            [apiService](const Wt::WEnvironment& env) {
-                return std::make_unique<RestaurantApp>(env, apiService);
+            [apiService, siteConfig](const Wt::WEnvironment& env) {
+                return std::make_unique<RestaurantApp>(env, apiService, siteConfig);
             }
         );
 

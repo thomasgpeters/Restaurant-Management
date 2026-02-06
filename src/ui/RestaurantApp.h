@@ -56,11 +56,17 @@ private:
     Wt::WContainerWidget* headerCartBubble_ = nullptr;
     Wt::WText* headerCartCount_ = nullptr;
     Wt::WText* headerCartTotal_ = nullptr;
+    Wt::WContainerWidget* headerThemeBtn_ = nullptr;
+    Wt::WText* headerThemeIcon_ = nullptr;
     Wt::WPushButton* headerLogoutBtn_ = nullptr;
 
     long long currentUserId_ = -1;
     long long currentRestaurantId_ = -1;
     std::string currentRole_;
+
+    // Theme management
+    Wt::JSignal<std::string> themeChanged_;
+    void onThemeChanged(const std::string& theme);
 
     // Cart click callback (set by MobileFrontDeskView)
     std::function<void()> cartClickCallback_;

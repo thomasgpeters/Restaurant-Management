@@ -1788,3 +1788,521 @@ body {
     }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   Theme Toggle Button
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.header-theme-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    color: #fff;
+}
+
+.header-theme-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.08);
+}
+
+.theme-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+}
+
+.theme-icon svg {
+    display: block;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Dark Theme (Plex-inspired)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] {
+    --color-primary:       #e5a00d;
+    --color-primary-dark:  #cc8e0b;
+    --color-secondary:     #8b8b8b;
+    --color-success:       #22c55e;
+    --color-danger:        #ef4444;
+    --color-warning:       #f59e0b;
+    --color-info:          #06b6d4;
+    --color-bg:            #121212;
+    --color-surface:       #1e1e1e;
+    --color-text:          #e8e8e8;
+    --color-text-muted:    #999999;
+    --color-border:        #333333;
+    --radius:              8px;
+    --shadow:              0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+    --shadow-md:           0 4px 6px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* ── Dark: Body & App Shell ───────────────────────────────────────────── */
+[data-theme="dark"] body {
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+
+[data-theme="dark"] .app-header {
+    background: linear-gradient(135deg, #1a1a1a, #252525);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+[data-theme="dark"] .app-footer {
+    background: #0d0d0d;
+    color: #666;
+}
+
+/* ── Dark: Header Controls ────────────────────────────────────────────── */
+[data-theme="dark"] .header-user-info {
+    background: rgba(255,255,255,0.08);
+}
+
+[data-theme="dark"] .header-logout-btn {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+}
+
+[data-theme="dark"] .header-logout-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+[data-theme="dark"] .header-cart-bubble {
+    background: rgba(229, 160, 13, 0.2);
+    border-color: rgba(229, 160, 13, 0.4);
+}
+
+[data-theme="dark"] .header-cart-bubble:hover {
+    background: rgba(229, 160, 13, 0.35);
+}
+
+[data-theme="dark"] .header-theme-btn {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+}
+
+[data-theme="dark"] .header-theme-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* ── Dark: Login Panel ────────────────────────────────────────────────── */
+[data-theme="dark"] .login-panel {
+    background: var(--color-surface);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+[data-theme="dark"] .login-title h2 {
+    color: var(--color-text);
+}
+
+/* ── Dark: Form Controls ──────────────────────────────────────────────── */
+[data-theme="dark"] .form-control {
+    background: #2a2a2a;
+    border-color: var(--color-border);
+    color: var(--color-text);
+}
+
+[data-theme="dark"] .form-control:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(229, 160, 13, 0.15);
+}
+
+/* ── Dark: Buttons ────────────────────────────────────────────────────── */
+[data-theme="dark"] .btn-primary {
+    background: var(--color-primary);
+    color: #111;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+    background: var(--color-primary-dark);
+}
+
+[data-theme="dark"] .btn-secondary {
+    background: #333;
+    color: var(--color-text);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+    background: #444;
+}
+
+[data-theme="dark"] .btn-refresh {
+    background: var(--color-info);
+    color: #111;
+}
+
+/* ── Dark: Panels (split workspace) ───────────────────────────────────── */
+[data-theme="dark"] .panel {
+    background: var(--color-surface);
+    box-shadow: var(--shadow);
+}
+
+[data-theme="dark"] .panel-title {
+    border-bottom-color: var(--color-border);
+}
+
+/* ── Dark: Data Tables ────────────────────────────────────────────────── */
+[data-theme="dark"] .data-table th {
+    background: #1a1a1a;
+    color: var(--color-text-muted);
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .data-table td {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .data-table tr:hover td {
+    background: #252525;
+}
+
+/* ── Dark: Dashboard Stats ────────────────────────────────────────────── */
+[data-theme="dark"] .stat-card {
+    background: var(--color-surface);
+    box-shadow: var(--shadow);
+}
+
+/* ── Dark: Menu Management ────────────────────────────────────────────── */
+[data-theme="dark"] .menu-item-row {
+    border-bottom-color: #2a2a2a;
+}
+
+[data-theme="dark"] .category-title h4 {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-border);
+}
+
+/* ── Dark: Category Tabs (desktop) ────────────────────────────────────── */
+[data-theme="dark"] .btn-category {
+    background: #2a2a2a;
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .btn-category:hover,
+[data-theme="dark"] .btn-category.active {
+    background: var(--color-primary);
+    color: #111;
+    border-color: var(--color-primary);
+}
+
+/* ── Dark: Menu Cards (desktop front desk) ────────────────────────────── */
+[data-theme="dark"] .menu-card {
+    background: #252525;
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .menu-card:hover {
+    border-color: var(--color-primary);
+}
+
+/* ── Dark: Cart ───────────────────────────────────────────────────────── */
+[data-theme="dark"] .cart-header {
+    border-bottom-color: var(--color-border);
+}
+
+/* ── Dark: Order Cards ────────────────────────────────────────────────── */
+[data-theme="dark"] .order-card {
+    background: #252525;
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .order-card-header {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .order-card-footer {
+    border-top-color: var(--color-border);
+}
+
+/* ── Dark: Status Badges ──────────────────────────────────────────────── */
+[data-theme="dark"] .status-pending {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+[data-theme="dark"] .status-progress {
+    background: rgba(6, 182, 212, 0.2);
+    color: #06b6d4;
+}
+
+[data-theme="dark"] .status-ready {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+[data-theme="dark"] .status-served {
+    background: rgba(148, 163, 184, 0.2);
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .status-cancelled {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+/* ── Dark: Kitchen View ───────────────────────────────────────────────── */
+[data-theme="dark"] .pending-card {
+    background: rgba(245, 158, 11, 0.08);
+    border-left-color: var(--color-warning);
+}
+
+[data-theme="dark"] .progress-card {
+    background: rgba(6, 182, 212, 0.08);
+    border-left-color: var(--color-info);
+}
+
+[data-theme="dark"] .kitchen-card-header {
+    border-bottom-color: rgba(255,255,255,0.08);
+}
+
+[data-theme="dark"] .order-notes {
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Dark Theme: Mobile Front Desk Views
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Dark: Tab Bar ────────────────────────────────────────────────────── */
+[data-theme="dark"] .m-tab-bar {
+    background: #1a1a1a;
+    border-top-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-tab {
+    color: #777;
+}
+
+[data-theme="dark"] .m-tab.active {
+    color: var(--color-primary);
+}
+
+/* ── Dark: Screen Headers ─────────────────────────────────────────────── */
+[data-theme="dark"] .m-screen-header {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-back-btn {
+    color: var(--color-primary);
+}
+
+[data-theme="dark"] .m-header-action-btn {
+    background: var(--color-info);
+    color: #111;
+}
+
+/* ── Dark: Category List (phone) ──────────────────────────────────────── */
+[data-theme="dark"] .m-list-item {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-list-item:active {
+    background: #252525;
+}
+
+[data-theme="dark"] .m-list-chevron {
+    color: #555;
+}
+
+/* ── Dark: Split-Panel Categories (tablet) ────────────────────────────── */
+[data-theme="dark"] .m-cat-panel {
+    background: #181818;
+    border-right-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-cat-item {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-cat-item:active {
+    background: #333;
+}
+
+[data-theme="dark"] .m-cat-item.active {
+    background: #252525;
+    border-left-color: var(--color-primary);
+}
+
+[data-theme="dark"] .m-cat-item.active .m-cat-name {
+    color: var(--color-primary);
+}
+
+[data-theme="dark"] .m-cat-count {
+    background: #333;
+    color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .m-cat-item.active .m-cat-count {
+    background: rgba(229, 160, 13, 0.15);
+    color: var(--color-primary);
+}
+
+/* ── Dark: Items Panel ────────────────────────────────────────────────── */
+[data-theme="dark"] .m-items-panel {
+    background: var(--color-bg);
+}
+
+[data-theme="dark"] .m-items-panel-title {
+    border-bottom-color: var(--color-border);
+}
+
+/* ── Dark: Menu Item Cards ────────────────────────────────────────────── */
+[data-theme="dark"] .m-item-card {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-item-card:active {
+    border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .m-add-btn {
+    background: var(--color-primary);
+    color: #111;
+}
+
+[data-theme="dark"] .m-add-btn:active {
+    background: var(--color-primary-dark);
+}
+
+/* ── Dark: Cart Screen ────────────────────────────────────────────────── */
+[data-theme="dark"] .m-cart-row {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-stepper {
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-stepper-btn {
+    background: #2a2a2a;
+    color: var(--color-text);
+}
+
+[data-theme="dark"] .m-stepper-btn:active {
+    background: #3a3a3a;
+}
+
+[data-theme="dark"] .m-cart-footer {
+    border-top-color: var(--color-border);
+}
+
+/* ── Dark: Action Buttons ─────────────────────────────────────────────── */
+[data-theme="dark"] .m-btn-primary {
+    background: var(--color-primary);
+    color: #111;
+}
+
+[data-theme="dark"] .m-btn-secondary {
+    background: #2a2a2a;
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-btn-success {
+    background: var(--color-success);
+    color: #111;
+}
+
+[data-theme="dark"] .m-action-btn-sm.m-btn-success {
+    background: var(--color-success);
+    color: #111;
+}
+
+/* ── Dark: Order Form ─────────────────────────────────────────────────── */
+[data-theme="dark"] .m-form-input {
+    background: #2a2a2a;
+    border-color: var(--color-border);
+    color: var(--color-text);
+}
+
+[data-theme="dark"] .m-form-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(229, 160, 13, 0.15);
+}
+
+[data-theme="dark"] .m-order-summary {
+    background: #252525;
+}
+
+[data-theme="dark"] .m-summary-title {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-summary-total {
+    border-top-color: var(--color-border);
+}
+
+/* ── Dark: Active Orders (mobile) ─────────────────────────────────────── */
+[data-theme="dark"] .m-order-card {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-order-card-header {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-order-card-footer {
+    border-top-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-status-badge.status-pending {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+[data-theme="dark"] .m-status-badge.status-progress {
+    background: rgba(6, 182, 212, 0.2);
+    color: #06b6d4;
+}
+
+[data-theme="dark"] .m-status-badge.status-ready {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+/* ── Dark: Confirmation Screen ────────────────────────────────────────── */
+[data-theme="dark"] .m-confirm-title {
+    color: var(--color-success);
+}
+
+/* ── Dark: Portrait tablet category panel override ────────────────────── */
+@media (orientation: portrait) and (min-width: 600px) {
+    [data-theme="dark"] .m-cat-panel {
+        background: linear-gradient(180deg, #181818 0%, #1a1a1a 100%);
+        border-right-color: var(--color-border);
+    }
+
+    [data-theme="dark"] .m-cat-item.active {
+        background: #252525;
+        box-shadow: inset 0 0 0 0 transparent, 2px 0 4px rgba(0,0,0,0.2);
+    }
+}
+
+/* ── Dark: Smooth theme transition ────────────────────────────────────── */
+html[data-theme] body,
+html[data-theme] .app-header,
+html[data-theme] .app-footer,
+html[data-theme] .login-panel,
+html[data-theme] .panel,
+html[data-theme] .m-tab-bar,
+html[data-theme] .m-cat-panel,
+html[data-theme] .m-item-card,
+html[data-theme] .m-order-card,
+html[data-theme] .form-control,
+html[data-theme] .m-form-input,
+html[data-theme] .header-theme-btn {
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+

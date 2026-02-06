@@ -21,7 +21,8 @@ std::shared_ptr<ApiService> RestaurantApp::sharedApiService = nullptr;
 RestaurantApp::RestaurantApp(const Wt::WEnvironment& env,
                              std::shared_ptr<ApiService> apiService)
     : Wt::WApplication(env), api_(apiService),
-      touchDetected_(this, "touchDetected")
+      touchDetected_(this, "touchDetected"),
+      themeChanged_(this, "themeChanged")
 {
     setTitle("Restaurant POS System");
 
@@ -38,6 +39,9 @@ RestaurantApp::RestaurantApp(const Wt::WEnvironment& env,
 
     // Connect JS->C++ signal for client-side touch detection callback
     touchDetected_.connect(this, &RestaurantApp::onTouchDetected);
+
+    // Connect theme change signal
+    themeChanged_.connect(this, &RestaurantApp::onThemeChanged);
 
     setupLayout();
     showLoginScreen();
@@ -194,6 +198,39 @@ void RestaurantApp::setupLayout() {
     headerCartBubble_->clicked().connect([this] {
         if (cartClickCallback_) cartClickCallback_();
     });
+
+    // Theme toggle button
+    headerThemeBtn_ = headerControls_->addWidget(std::make_unique<Wt::WContainerWidget>());
+    headerThemeBtn_->addStyleClass("header-theme-btn");
+    headerThemeIcon_ = headerThemeBtn_->addWidget(std::make_unique<Wt::WText>(
+        "<svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'>"
+        "<path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/></svg>"));
+    headerThemeIcon_->addStyleClass("theme-icon");
+
+    // Theme toggle: cycles light -> dark -> light
+    std::string themeSignalCall = themeChanged_.createCall({"theme"});
+    headerThemeBtn_->clicked().connect([this, themeSignalCall] {
+        doJavaScript(
+            "(function(){"
+            "  var cur = document.documentElement.getAttribute('data-theme') || 'light';"
+            "  var next = (cur === 'dark') ? 'light' : 'dark';"
+            "  document.documentElement.setAttribute('data-theme', next);"
+            "  try { localStorage.setItem('pos-theme', next); } catch(e) {}"
+            "  var theme = next;"
+            "  " + themeSignalCall + ";"
+            "})();");
+    });
+
+    // Initialize theme from localStorage on page load
+    doJavaScript(
+        "(function(){"
+        "  try {"
+        "    var t = localStorage.getItem('pos-theme');"
+        "    if (t === 'dark') {"
+        "      document.documentElement.setAttribute('data-theme', 'dark');"
+        "    }"
+        "  } catch(e) {}"
+        "})();");
 
     // Logout button in header (hidden until logged in)
     headerLogoutBtn_ = headerControls_->addWidget(std::make_unique<Wt::WPushButton>("Logout"));
@@ -356,4 +393,23 @@ void RestaurantApp::setHeaderCartVisible(bool visible) {
 
 void RestaurantApp::setCartClickTarget(std::function<void()> callback) {
     cartClickCallback_ = std::move(callback);
+}
+
+void RestaurantApp::onThemeChanged(const std::string& theme) {
+    // Update the theme icon to reflect current state
+    if (theme == "dark") {
+        headerThemeIcon_->setText(
+            "<svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'>"
+            "<circle cx='12' cy='12' r='5'/>"
+            "<line x1='12' y1='1' x2='12' y2='3'/><line x1='12' y1='21' x2='12' y2='23'/>"
+            "<line x1='4.22' y1='4.22' x2='5.64' y2='5.64'/>"
+            "<line x1='18.36' y1='18.36' x2='19.78' y2='19.78'/>"
+            "<line x1='1' y1='12' x2='3' y2='12'/><line x1='21' y1='12' x2='23' y2='12'/>"
+            "<line x1='4.22' y1='19.78' x2='5.64' y2='18.36'/>"
+            "<line x1='18.36' y1='5.64' x2='19.78' y2='4.22'/></svg>");
+    } else {
+        headerThemeIcon_->setText(
+            "<svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'>"
+            "<path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/></svg>");
+    }
 }

@@ -31,6 +31,9 @@ KitchenView::KitchenView(std::shared_ptr<ApiService> api, long long restaurantId
     rightPanel->addStyleClass("panel right-panel kitchen-inprogress");
     buildInProgressPanel(rightPanel);
 
+    // Initial data load (both containers must exist before calling refresh)
+    refreshOrders();
+
     // Auto-refresh timer (every 10 seconds)
     refreshTimer_ = addChild(std::make_unique<Wt::WTimer>());
     refreshTimer_->setInterval(std::chrono::seconds(10));
@@ -43,7 +46,6 @@ void KitchenView::buildPendingPanel(Wt::WContainerWidget* parent) {
         ->addStyleClass("panel-title");
     pendingContainer_ = parent->addWidget(std::make_unique<Wt::WContainerWidget>());
     pendingContainer_->addStyleClass("kitchen-orders");
-    refreshOrders();
 }
 
 void KitchenView::buildInProgressPanel(Wt::WContainerWidget* parent) {

@@ -12,6 +12,8 @@
 
 #include "../services/ApiService.h"
 
+class RestaurantApp;  // forward declaration
+
 struct MobileCartItem {
     long long menuItemId;
     std::string name;
@@ -33,7 +35,8 @@ enum class MobileScreen {
 
 class MobileFrontDeskView : public Wt::WContainerWidget {
 public:
-    MobileFrontDeskView(std::shared_ptr<ApiService> api, long long restaurantId);
+    MobileFrontDeskView(std::shared_ptr<ApiService> api, long long restaurantId,
+                        RestaurantApp* app = nullptr);
 
 private:
     // Screen builders
@@ -64,6 +67,7 @@ private:
 
     std::shared_ptr<ApiService> api_;
     long long restaurantId_;
+    RestaurantApp* app_ = nullptr;  // for header cart updates
 
     // Navigation state
     MobileScreen currentScreen_ = MobileScreen::Categories;
@@ -78,11 +82,6 @@ private:
     Wt::WContainerWidget* tabMenu_ = nullptr;
     Wt::WContainerWidget* tabCart_ = nullptr;
     Wt::WContainerWidget* tabOrders_ = nullptr;
-
-    // Floating cart bubble
-    Wt::WContainerWidget* cartBubble_ = nullptr;
-    Wt::WText* bubbleCount_ = nullptr;
-    Wt::WText* bubbleTotal_ = nullptr;
 
     // Order form fields (persisted across nav)
     std::string customerName_;

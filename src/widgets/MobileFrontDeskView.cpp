@@ -1,4 +1,5 @@
 #include "MobileFrontDeskView.h"
+#include "../ui/RestaurantApp.h"
 
 #include <Wt/WBreak.h>
 #include <Wt/WTable.h>
@@ -8,8 +9,9 @@
 // ─── Constructor ─────────────────────────────────────────────────────────────
 
 MobileFrontDeskView::MobileFrontDeskView(
-    std::shared_ptr<ApiService> api, long long restaurantId)
-    : api_(api), restaurantId_(restaurantId)
+    std::shared_ptr<ApiService> api, long long restaurantId,
+    RestaurantApp* app)
+    : api_(api), restaurantId_(restaurantId), app_(app)
 {
     addStyleClass("m-frontdesk");
 
@@ -17,29 +19,12 @@ MobileFrontDeskView::MobileFrontDeskView(
     screenContainer_ = addWidget(std::make_unique<Wt::WContainerWidget>());
     screenContainer_->addStyleClass("m-screen-container");
 
-    // Floating cart bubble (shows cart count + total while browsing menu)
-    cartBubble_ = addWidget(std::make_unique<Wt::WContainerWidget>());
-    cartBubble_->addStyleClass("m-cart-bubble");
-    cartBubble_->setHidden(true);
-
-    auto bubbleIcon = cartBubble_->addWidget(std::make_unique<Wt::WText>(
-        "<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'>"
-        "<circle cx='9' cy='21' r='1'/><circle cx='20' cy='21' r='1'/>"
-        "<path d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/></svg>"));
-    bubbleIcon->addStyleClass("m-cart-bubble-icon");
-
-    bubbleCount_ = cartBubble_->addWidget(std::make_unique<Wt::WText>("0"));
-    bubbleCount_->addStyleClass("m-cart-bubble-count");
-
-    auto divider = cartBubble_->addWidget(std::make_unique<Wt::WContainerWidget>());
-    divider->addStyleClass("m-cart-bubble-divider");
-
-    bubbleTotal_ = cartBubble_->addWidget(std::make_unique<Wt::WText>("$0.00"));
-    bubbleTotal_->addStyleClass("m-cart-bubble-total");
-
-    cartBubble_->clicked().connect([this] {
-        navigateTo(MobileScreen::Cart);
-    });
+    // Register header cart bubble click to navigate to cart
+    if (app_) {
+        app_->setCartClickTarget([this] {
+            navigateTo(MobileScreen::Cart);
+        });
+    }
 
     // Bottom tab bar
     buildTabBar();
@@ -621,22 +606,12 @@ void MobileFrontDeskView::addToCart(
             ci.quantity++;
             updateCartBadge();
             updateCartBubble();
-            // Trigger bounce animation on the bubble
-            doJavaScript(
-                "var b = document.querySelector('.m-cart-bubble');"
-                "if(b){b.classList.remove('bounce');"
-                "void b.offsetWidth; b.classList.add('bounce');}");
             return;
         }
     }
     cart_.push_back({menuItemId, name, price, 1});
     updateCartBadge();
     updateCartBubble();
-    // Trigger bounce animation on the bubble
-    doJavaScript(
-        "var b = document.querySelector('.m-cart-bubble');"
-        "if(b){b.classList.remove('bounce');"
-        "void b.offsetWidth; b.classList.add('bounce');}");
 }
 
 void MobileFrontDeskView::removeFromCart(int index) {
@@ -660,23 +635,13 @@ void MobileFrontDeskView::updateCartBadge() {
 }
 
 void MobileFrontDeskView::updateCartBubble() {
+    if (!app_) return;
+
     int totalItems = 0;
     for (auto& ci : cart_) totalItems += ci.quantity;
 
-    // Only show bubble on menu browsing screens when cart has items
-    bool showBubble = (totalItems > 0) &&
-        (currentScreen_ == MobileScreen::Categories ||
-         currentScreen_ == MobileScreen::MenuItems);
-
-    cartBubble_->setHidden(!showBubble);
-
-    if (showBubble) {
-        bubbleCount_->setText(std::to_string(totalItems));
-
-        std::stringstream ts;
-        ts << "$" << std::fixed << std::setprecision(2) << cartTotal();
-        bubbleTotal_->setText(ts.str());
-    }
+    // Update the header cart bubble with current totals
+    app_->updateHeaderCart(totalItems, cartTotal());
 }
 
 double MobileFrontDeskView::cartTotal() const {

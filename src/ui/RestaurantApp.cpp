@@ -8,6 +8,9 @@
 #include <Wt/WPushButton.h>
 #include <Wt/WText.h>
 
+#include <sstream>
+#include <iomanip>
+
 #include "../widgets/ManagerView.h"
 #include "../widgets/FrontDeskView.h"
 #include "../widgets/MobileFrontDeskView.h"
@@ -150,7 +153,39 @@ void RestaurantApp::setupLayout() {
     headerTitle_ = headerInner->addWidget(std::make_unique<Wt::WText>("Restaurant POS"));
     headerTitle_->addStyleClass("header-title");
 
-    headerUserInfo_ = headerInner->addWidget(std::make_unique<Wt::WText>(""));
+    // Right-side controls group: [cart bubble] [logout] [user info]
+    headerControls_ = headerInner->addWidget(std::make_unique<Wt::WContainerWidget>());
+    headerControls_->addStyleClass("header-controls");
+
+    // Cart bubble in header (hidden by default, shown during Front Desk)
+    headerCartBubble_ = headerControls_->addWidget(std::make_unique<Wt::WContainerWidget>());
+    headerCartBubble_->addStyleClass("header-cart-bubble");
+    headerCartBubble_->setHidden(true);
+
+    headerCartBubble_->addWidget(std::make_unique<Wt::WText>(
+        "<svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'>"
+        "<circle cx='9' cy='21' r='1'/><circle cx='20' cy='21' r='1'/>"
+        "<path d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/></svg>"))
+        ->addStyleClass("header-cart-icon");
+
+    headerCartCount_ = headerCartBubble_->addWidget(std::make_unique<Wt::WText>("0"));
+    headerCartCount_->addStyleClass("header-cart-count");
+
+    headerCartTotal_ = headerCartBubble_->addWidget(std::make_unique<Wt::WText>("$0.00"));
+    headerCartTotal_->addStyleClass("header-cart-total");
+
+    headerCartBubble_->clicked().connect([this] {
+        if (cartClickCallback_) cartClickCallback_();
+    });
+
+    // Logout button in header (hidden until logged in)
+    headerLogoutBtn_ = headerControls_->addWidget(std::make_unique<Wt::WPushButton>("Logout"));
+    headerLogoutBtn_->addStyleClass("header-logout-btn");
+    headerLogoutBtn_->setHidden(true);
+    headerLogoutBtn_->clicked().connect(this, &RestaurantApp::logout);
+
+    // User info pill
+    headerUserInfo_ = headerControls_->addWidget(std::make_unique<Wt::WText>(""));
     headerUserInfo_->addStyleClass("header-user-info");
 
     // Main workspace
@@ -168,6 +203,8 @@ void RestaurantApp::showLoginScreen() {
     workspace_->clear();
     workspace_->addStyleClass("login-mode");
     headerUserInfo_->setText("");
+    headerLogoutBtn_->setHidden(true);
+    headerCartBubble_->setHidden(true);
 
     auto loginPanel = workspace_->addWidget(std::make_unique<Wt::WContainerWidget>());
     loginPanel->addStyleClass("login-panel");
@@ -243,12 +280,8 @@ void RestaurantApp::showLoginScreen() {
 void RestaurantApp::showManagerView(long long restaurantId) {
     workspace_->clear();
     workspace_->removeStyleClass("login-mode");
-
-    auto topNav = workspace_->addWidget(std::make_unique<Wt::WContainerWidget>());
-    topNav->addStyleClass("view-nav");
-    auto logoutBtn = topNav->addWidget(std::make_unique<Wt::WPushButton>("Logout"));
-    logoutBtn->addStyleClass("btn btn-secondary");
-    logoutBtn->clicked().connect(this, &RestaurantApp::logout);
+    headerLogoutBtn_->setHidden(false);
+    headerCartBubble_->setHidden(true);
 
     workspace_->addWidget(std::make_unique<ManagerView>(api_, restaurantId));
 }
@@ -256,24 +289,13 @@ void RestaurantApp::showManagerView(long long restaurantId) {
 void RestaurantApp::showFrontDeskView(long long restaurantId) {
     workspace_->clear();
     workspace_->removeStyleClass("login-mode");
+    headerLogoutBtn_->setHidden(false);
+    headerCartBubble_->setHidden(true);
 
     if (isMobile_) {
-        // Mobile: compact header with logout integrated in the flow
-        auto topNav = workspace_->addWidget(std::make_unique<Wt::WContainerWidget>());
-        topNav->addStyleClass("view-nav m-view-nav");
-        auto logoutBtn = topNav->addWidget(std::make_unique<Wt::WPushButton>("Logout"));
-        logoutBtn->addStyleClass("m-logout-btn");
-        logoutBtn->clicked().connect(this, &RestaurantApp::logout);
-
         workspace_->addWidget(
-            std::make_unique<MobileFrontDeskView>(api_, restaurantId));
+            std::make_unique<MobileFrontDeskView>(api_, restaurantId, this));
     } else {
-        auto topNav = workspace_->addWidget(std::make_unique<Wt::WContainerWidget>());
-        topNav->addStyleClass("view-nav");
-        auto logoutBtn = topNav->addWidget(std::make_unique<Wt::WPushButton>("Logout"));
-        logoutBtn->addStyleClass("btn btn-secondary");
-        logoutBtn->clicked().connect(this, &RestaurantApp::logout);
-
         workspace_->addWidget(std::make_unique<FrontDeskView>(api_, restaurantId));
     }
 }
@@ -281,12 +303,8 @@ void RestaurantApp::showFrontDeskView(long long restaurantId) {
 void RestaurantApp::showKitchenView(long long restaurantId) {
     workspace_->clear();
     workspace_->removeStyleClass("login-mode");
-
-    auto topNav = workspace_->addWidget(std::make_unique<Wt::WContainerWidget>());
-    topNav->addStyleClass("view-nav");
-    auto logoutBtn = topNav->addWidget(std::make_unique<Wt::WPushButton>("Logout"));
-    logoutBtn->addStyleClass("btn btn-secondary");
-    logoutBtn->clicked().connect(this, &RestaurantApp::logout);
+    headerLogoutBtn_->setHidden(false);
+    headerCartBubble_->setHidden(true);
 
     workspace_->addWidget(std::make_unique<KitchenView>(api_, restaurantId));
 }
@@ -296,4 +314,29 @@ void RestaurantApp::logout() {
     currentRestaurantId_ = -1;
     currentRole_.clear();
     showLoginScreen();
+}
+
+void RestaurantApp::updateHeaderCart(int itemCount, double total) {
+    if (itemCount > 0) {
+        headerCartCount_->setText(std::to_string(itemCount));
+        std::stringstream ts;
+        ts << "$" << std::fixed << std::setprecision(2) << total;
+        headerCartTotal_->setText(ts.str());
+        headerCartBubble_->setHidden(false);
+        // Trigger bounce animation
+        doJavaScript(
+            "var b = document.querySelector('.header-cart-bubble');"
+            "if(b){b.classList.remove('bounce');"
+            "void b.offsetWidth; b.classList.add('bounce');}");
+    } else {
+        headerCartBubble_->setHidden(true);
+    }
+}
+
+void RestaurantApp::setHeaderCartVisible(bool visible) {
+    headerCartBubble_->setHidden(!visible);
+}
+
+void RestaurantApp::setCartClickTarget(std::function<void()> callback) {
+    cartClickCallback_ = std::move(callback);
 }

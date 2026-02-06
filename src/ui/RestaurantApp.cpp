@@ -139,6 +139,7 @@ void RestaurantApp::setupLayout() {
 
 void RestaurantApp::showLoginScreen() {
     workspace_->clear();
+    workspace_->addStyleClass("login-mode");
     headerUserInfo_->setText("");
 
     auto loginPanel = workspace_->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -214,6 +215,7 @@ void RestaurantApp::showLoginScreen() {
 
 void RestaurantApp::showManagerView(long long restaurantId) {
     workspace_->clear();
+    workspace_->removeStyleClass("login-mode");
 
     auto topNav = workspace_->addWidget(std::make_unique<Wt::WContainerWidget>());
     topNav->addStyleClass("view-nav");
@@ -226,6 +228,7 @@ void RestaurantApp::showManagerView(long long restaurantId) {
 
 void RestaurantApp::showFrontDeskView(long long restaurantId) {
     workspace_->clear();
+    workspace_->removeStyleClass("login-mode");
 
     if (isMobile_) {
         // Mobile: compact header with logout integrated in the flow
@@ -250,6 +253,7 @@ void RestaurantApp::showFrontDeskView(long long restaurantId) {
 
 void RestaurantApp::showKitchenView(long long restaurantId) {
     workspace_->clear();
+    workspace_->removeStyleClass("login-mode");
 
     auto topNav = workspace_->addWidget(std::make_unique<Wt::WContainerWidget>());
     topNav->addStyleClass("view-nav");

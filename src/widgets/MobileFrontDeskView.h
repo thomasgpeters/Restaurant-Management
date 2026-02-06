@@ -56,6 +56,7 @@ private:
     void addToCart(long long menuItemId, const std::string& name, double price);
     void removeFromCart(int index);
     void updateCartBadge();
+    void updateCartBubble();
     double cartTotal() const;
 
     // Order submission
@@ -77,6 +78,11 @@ private:
     Wt::WContainerWidget* tabMenu_ = nullptr;
     Wt::WContainerWidget* tabCart_ = nullptr;
     Wt::WContainerWidget* tabOrders_ = nullptr;
+
+    // Floating cart bubble
+    Wt::WContainerWidget* cartBubble_ = nullptr;
+    Wt::WText* bubbleCount_ = nullptr;
+    Wt::WText* bubbleTotal_ = nullptr;
 
     // Order form fields (persisted across nav)
     std::string customerName_;

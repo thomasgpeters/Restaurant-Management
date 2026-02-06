@@ -95,22 +95,49 @@ void RestaurantApp::setupLayout() {
     // (Samsung desktop mode, modern iPadOS reporting as Macintosh, etc.)
     // Uses touch capability + screen size to determine if this is a tablet.
     // Fires a JSignal back to the server so we can switch to mobile views.
+    //
+    // The detection retries until Wt's JS framework is loaded (Wt.emit),
+    // and also hooks a touchstart listener as a fallback trigger.
+    std::string signalCall = touchDetected_.createCall({"info"});
     doJavaScript(
         "(function(){"
-        "  var isTouch = ('ontouchstart' in window) || "
-        "    (navigator.maxTouchPoints > 0) || "
-        "    (navigator.msMaxTouchPoints > 0);"
-        "  if (!isTouch) return;"
-        "  var w = Math.min(screen.width, screen.height);"
-        "  if (w >= 600) {"  // tablet-sized screen (600px+ shortest side)
+        "  var fired = false;"
+        "  function detect(){"
+        "    var isTouch = ('ontouchstart' in window) || "
+        "      (navigator.maxTouchPoints > 0) || "
+        "      (navigator.msMaxTouchPoints > 0);"
+        "    if (!isTouch) return false;"
+        "    var sw = Math.min(screen.width, screen.height);"
+        "    var ww = Math.min(window.innerWidth, window.innerHeight);"
+        "    var w = Math.max(sw, ww);"
+        "    return (w >= 600);"  // tablet-sized screen
+        "  }"
+        "  function fire(){"
+        "    if (fired) return;"
+        "    if (!detect()) return;"
+        "    if (typeof Wt === 'undefined' || typeof Wt.emit !== 'function'){"
+        "      setTimeout(fire, 150);"
+        "      return;"
+        "    }"
+        "    fired = true;"
         "    document.body.classList.add('is-mobile');"
         "    var info = 'touch';"
-        "    if (navigator.userAgent.indexOf('Macintosh') !== -1) {"
+        "    if (navigator.userAgent.indexOf('Macintosh') !== -1){"
         "      document.body.classList.add('is-ipad');"
         "      info = 'ipad';"
         "    }"
-        "    " + touchDetected_.createCall({"info"}) + ";"
+        "    " + signalCall + ";"
         "  }"
+        // Try immediately, then retry with delays
+        "  fire();"
+        "  setTimeout(fire, 300);"
+        "  setTimeout(fire, 800);"
+        "  setTimeout(fire, 2000);"
+        // Also trigger on first touch as ultimate fallback
+        "  document.addEventListener('touchstart', function ts(){"
+        "    document.removeEventListener('touchstart', ts);"
+        "    fire();"
+        "  }, {passive:true});"
         "})();");
 
     // Header

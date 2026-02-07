@@ -255,6 +255,20 @@ void RestaurantApp::setupLayout() {
     headerUserInfo_ = headerControls_->addWidget(std::make_unique<Wt::WText>(""));
     headerUserInfo_->addStyleClass("header-user-info");
 
+    // Refresh button (circular icon, shown in Manager view)
+    headerRefreshBtn_ = headerControls_->addWidget(std::make_unique<Wt::WContainerWidget>());
+    headerRefreshBtn_->addStyleClass("header-refresh-btn");
+    headerRefreshBtn_->setHidden(true);
+    headerRefreshBtn_->addWidget(std::make_unique<Wt::WText>(
+        "<svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'>"
+        "<polyline points='23 4 23 10 17 10'/>"
+        "<polyline points='1 20 1 14 7 14'/>"
+        "<path d='M3.51 9a9 9 0 0 1 14.85-3.36L23 10'/>"
+        "<path d='M20.49 15a9 9 0 0 1-14.85 3.36L1 14'/></svg>"));
+    headerRefreshBtn_->clicked().connect([this] {
+        if (refreshClickCallback_) refreshClickCallback_();
+    });
+
     // Main workspace
     workspace_ = body->addWidget(std::make_unique<Wt::WContainerWidget>());
     workspace_->addStyleClass("app-workspace");
@@ -272,6 +286,8 @@ void RestaurantApp::showLoginScreen() {
     headerUserInfo_->setText("");
     headerLogoutBtn_->setHidden(true);
     headerCartBubble_->setHidden(true);
+    headerRefreshBtn_->setHidden(true);
+    refreshClickCallback_ = nullptr;
 
     auto loginPanel = workspace_->addWidget(std::make_unique<Wt::WContainerWidget>());
     loginPanel->addStyleClass("login-panel");
@@ -358,6 +374,8 @@ void RestaurantApp::showFrontDeskView(long long restaurantId) {
     workspace_->removeStyleClass("login-mode");
     headerLogoutBtn_->setHidden(false);
     headerCartBubble_->setHidden(true);
+    headerRefreshBtn_->setHidden(true);
+    refreshClickCallback_ = nullptr;
 
     if (isMobile_) {
         workspace_->addWidget(
@@ -372,6 +390,8 @@ void RestaurantApp::showKitchenView(long long restaurantId) {
     workspace_->removeStyleClass("login-mode");
     headerLogoutBtn_->setHidden(false);
     headerCartBubble_->setHidden(true);
+    headerRefreshBtn_->setHidden(true);
+    refreshClickCallback_ = nullptr;
 
     workspace_->addWidget(std::make_unique<KitchenView>(api_, restaurantId));
 }
@@ -406,6 +426,14 @@ void RestaurantApp::setHeaderCartVisible(bool visible) {
 
 void RestaurantApp::setCartClickTarget(std::function<void()> callback) {
     cartClickCallback_ = std::move(callback);
+}
+
+void RestaurantApp::setHeaderRefreshVisible(bool visible) {
+    headerRefreshBtn_->setHidden(!visible);
+}
+
+void RestaurantApp::setRefreshClickTarget(std::function<void()> callback) {
+    refreshClickCallback_ = std::move(callback);
 }
 
 void RestaurantApp::refreshHeaderBranding() {

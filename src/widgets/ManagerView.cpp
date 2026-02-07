@@ -55,11 +55,17 @@ void ManagerView::buildDashboard(Wt::WContainerWidget* parent) {
     statPending_     = makeCard("Pending", "stat-pending");
     statInProgress_  = makeCard("In Progress", "stat-progress");
 
-    auto refreshBtn = parent->addWidget(std::make_unique<Wt::WPushButton>("Refresh"));
-    refreshBtn->addStyleClass("btn btn-refresh");
-    refreshBtn->clicked().connect([this] { refreshDashboard(); refreshOrders(); refreshMenu(); });
-
     refreshDashboard();
+
+    // Wire header refresh button (circular icon in the app header)
+    if (app_) {
+        app_->setRefreshClickTarget([this] {
+            refreshDashboard();
+            refreshOrders();
+            refreshMenu();
+        });
+        app_->setHeaderRefreshVisible(true);
+    }
 }
 
 void ManagerView::refreshDashboard() {

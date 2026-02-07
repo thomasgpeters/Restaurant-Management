@@ -1950,6 +1950,31 @@ body {
     transform: scale(1.08);
 }
 
+/* ── Header Refresh Button (circular icon) ────────────────────────────── */
+.header-refresh-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+    color: #fff;
+}
+
+.header-refresh-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: rotate(90deg);
+}
+
+.header-refresh-btn:active {
+    transform: rotate(180deg);
+}
+
 .theme-icon {
     display: flex;
     align-items: center;
@@ -2028,6 +2053,15 @@ body {
 }
 
 [data-theme="dark"] .header-theme-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+[data-theme="dark"] .header-refresh-btn {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+}
+
+[data-theme="dark"] .header-refresh-btn:hover {
     background: rgba(255,255,255,0.2);
 }
 
@@ -2483,7 +2517,8 @@ html[data-theme] .m-item-card,
 html[data-theme] .m-order-card,
 html[data-theme] .form-control,
 html[data-theme] .m-form-input,
-html[data-theme] .header-theme-btn {
+html[data-theme] .header-theme-btn,
+html[data-theme] .header-refresh-btn {
     transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 

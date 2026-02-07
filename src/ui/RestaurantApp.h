@@ -29,6 +29,10 @@ public:
     // Called by MobileFrontDeskView to register itself for header cart clicks
     void setCartClickTarget(std::function<void()> callback);
 
+    // Header refresh button (shown in Manager view)
+    void setHeaderRefreshVisible(bool visible);
+    void setRefreshClickTarget(std::function<void()> callback);
+
     // Refresh header branding from SiteConfig (called after config save)
     void refreshHeaderBranding();
 
@@ -69,6 +73,7 @@ private:
     Wt::WText* headerCartTotal_ = nullptr;
     Wt::WContainerWidget* headerThemeBtn_ = nullptr;
     Wt::WText* headerThemeIcon_ = nullptr;
+    Wt::WContainerWidget* headerRefreshBtn_ = nullptr;
     Wt::WPushButton* headerLogoutBtn_ = nullptr;
 
     long long currentUserId_ = -1;
@@ -81,4 +86,5 @@ private:
 
     // Cart click callback (set by MobileFrontDeskView)
     std::function<void()> cartClickCallback_;
+    std::function<void()> refreshClickCallback_;
 };

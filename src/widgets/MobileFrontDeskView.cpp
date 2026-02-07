@@ -9,7 +9,7 @@
 // ─── Constructor ─────────────────────────────────────────────────────────────
 
 MobileFrontDeskView::MobileFrontDeskView(
-    std::shared_ptr<ApiService> api, long long restaurantId,
+    std::shared_ptr<IApiService> api, long long restaurantId,
     RestaurantApp* app, bool isTablet)
     : api_(api), restaurantId_(restaurantId), app_(app), isTablet_(isTablet)
 {
@@ -190,13 +190,12 @@ void MobileFrontDeskView::buildMenuBrowserScreen() {
     auto catPanel = split->addWidget(std::make_unique<Wt::WContainerWidget>());
     catPanel->addStyleClass("m-cat-panel");
 
-    Wt::Dbo::Transaction t(api_->session());
     auto categories = api_->getCategories(restaurantId_);
 
     bool firstCat = true;
     for (auto& cat : categories) {
-        long long catId = cat.id();
-        std::string catName = cat->name;
+        long long catId = cat.id;
+        std::string catName = cat.name;
 
         // Auto-select first category if none selected
         if (firstCat && currentCategoryId_ < 0) {
@@ -217,7 +216,7 @@ void MobileFrontDeskView::buildMenuBrowserScreen() {
         auto items = api_->getMenuItemsByCategory(catId);
         int availCount = 0;
         for (auto& item : items) {
-            if (item->available) availCount++;
+            if (item.available) availCount++;
         }
         row->addWidget(std::make_unique<Wt::WText>(std::to_string(availCount)))
             ->addStyleClass("m-cat-count");
@@ -269,16 +268,15 @@ void MobileFrontDeskView::refreshItemsPanel() {
     auto list = itemsPanel_->addWidget(std::make_unique<Wt::WContainerWidget>());
     list->addStyleClass("m-items-list");
 
-    Wt::Dbo::Transaction t(api_->session());
     auto items = api_->getMenuItemsByCategory(currentCategoryId_);
 
     for (auto& item : items) {
-        if (!item->available) continue;
+        if (!item.available) continue;
 
-        long long itemId = item.id();
-        std::string itemName = item->name;
-        std::string itemDesc = item->description;
-        double itemPrice = item->price;
+        long long itemId = item.id;
+        std::string itemName = item.name;
+        std::string itemDesc = item.description;
+        double itemPrice = item.price;
 
         auto card = list->addWidget(std::make_unique<Wt::WContainerWidget>());
         card->addStyleClass("m-item-card");
@@ -316,17 +314,16 @@ void MobileFrontDeskView::buildCategoriesScreen() {
     auto list = screenContainer_->addWidget(std::make_unique<Wt::WContainerWidget>());
     list->addStyleClass("m-list");
 
-    Wt::Dbo::Transaction t(api_->session());
     auto categories = api_->getCategories(restaurantId_);
 
     for (auto& cat : categories) {
-        long long catId = cat.id();
-        std::string catName = cat->name;
+        long long catId = cat.id;
+        std::string catName = cat.name;
 
         auto items = api_->getMenuItemsByCategory(catId);
         int availCount = 0;
         for (auto& item : items) {
-            if (item->available) availCount++;
+            if (item.available) availCount++;
         }
 
         auto row = list->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -369,16 +366,15 @@ void MobileFrontDeskView::buildMenuItemsScreen() {
     auto list = screenContainer_->addWidget(std::make_unique<Wt::WContainerWidget>());
     list->addStyleClass("m-items-list");
 
-    Wt::Dbo::Transaction t(api_->session());
     auto items = api_->getMenuItemsByCategory(currentCategoryId_);
 
     for (auto& item : items) {
-        if (!item->available) continue;
+        if (!item.available) continue;
 
-        long long itemId = item.id();
-        std::string itemName = item->name;
-        std::string itemDesc = item->description;
-        double itemPrice = item->price;
+        long long itemId = item.id;
+        std::string itemName = item.name;
+        std::string itemDesc = item.description;
+        double itemPrice = item.price;
 
         auto card = list->addWidget(std::make_unique<Wt::WContainerWidget>());
         card->addStyleClass("m-item-card");
@@ -654,7 +650,6 @@ void MobileFrontDeskView::buildActiveOrdersScreen() {
         navigateTo(MobileScreen::ActiveOrders);
     });
 
-    Wt::Dbo::Transaction t(api_->session());
     auto orders = api_->getActiveOrders(restaurantId_);
 
     if (orders.empty()) {
@@ -671,7 +666,7 @@ void MobileFrontDeskView::buildActiveOrdersScreen() {
     list->addStyleClass("m-orders-list");
 
     for (auto& order : orders) {
-        long long oid = order.id();
+        long long oid = order.id;
         auto card = list->addWidget(std::make_unique<Wt::WContainerWidget>());
         card->addStyleClass("m-order-card");
 
@@ -683,13 +678,13 @@ void MobileFrontDeskView::buildActiveOrdersScreen() {
         leftInfo->addWidget(std::make_unique<Wt::WText>(
             "Order #" + std::to_string(oid)))->addStyleClass("m-order-id");
         leftInfo->addWidget(std::make_unique<Wt::WText>(
-            "Table " + std::to_string(order->table_number)))->addStyleClass("m-order-table-num");
+            "Table " + std::to_string(order.table_number)))->addStyleClass("m-order-table-num");
 
-        auto statusBadge = cardHeader->addWidget(std::make_unique<Wt::WText>(order->status));
+        auto statusBadge = cardHeader->addWidget(std::make_unique<Wt::WText>(order.status));
         std::string statusClass = "m-status-badge ";
-        if (order->status == "Pending") statusClass += "status-pending";
-        else if (order->status == "In Progress") statusClass += "status-progress";
-        else if (order->status == "Ready") statusClass += "status-ready";
+        if (order.status == "Pending") statusClass += "status-pending";
+        else if (order.status == "In Progress") statusClass += "status-progress";
+        else if (order.status == "Ready") statusClass += "status-ready";
         statusBadge->addStyleClass(statusClass);
 
         // Items
@@ -700,11 +695,11 @@ void MobileFrontDeskView::buildActiveOrdersScreen() {
             auto line = itemsList->addWidget(std::make_unique<Wt::WContainerWidget>());
             line->addStyleClass("m-order-item-line");
             line->addWidget(std::make_unique<Wt::WText>(
-                std::to_string(oi->quantity) + "x " + oi->menu_item->name));
+                std::to_string(oi.quantity) + "x " + oi.menu_item_name));
 
             std::stringstream ss;
             ss << "$" << std::fixed << std::setprecision(2)
-               << (oi->unit_price * oi->quantity);
+               << (oi.unit_price * oi.quantity);
             line->addWidget(std::make_unique<Wt::WText>(ss.str()))
                 ->addStyleClass("m-order-item-price");
         }
@@ -714,11 +709,11 @@ void MobileFrontDeskView::buildActiveOrdersScreen() {
         cardFooter->addStyleClass("m-order-card-footer");
 
         std::stringstream totalSs;
-        totalSs << "Total: $" << std::fixed << std::setprecision(2) << order->total;
+        totalSs << "Total: $" << std::fixed << std::setprecision(2) << order.total;
         cardFooter->addWidget(std::make_unique<Wt::WText>(totalSs.str()))
             ->addStyleClass("m-order-total");
 
-        if (order->status == "Ready") {
+        if (order.status == "Ready") {
             auto serveBtn = cardFooter->addWidget(
                 std::make_unique<Wt::WPushButton>("Mark Served"));
             serveBtn->addStyleClass("m-action-btn-sm m-btn-success");
@@ -791,7 +786,7 @@ void MobileFrontDeskView::submitOrder() {
 
     std::string name = customerName_.empty() ? "Walk-In Guest" : customerName_;
     auto order = api_->createOrder(restaurantId_, tableNumber_, name, orderNotes_);
-    long long orderId = order.id();
+    long long orderId = order.id;
 
     for (auto& ci : cart_) {
         api_->addOrderItem(orderId, ci.menuItemId, ci.quantity, "");

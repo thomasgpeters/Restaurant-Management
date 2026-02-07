@@ -32,6 +32,9 @@ if(NOT SQLITE3_FOUND)
     find_path(SQLITE3_INCLUDE_DIRS sqlite3.h)
 endif()
 
+# ─── libcurl (for RestApiService HTTP client) ────────────────────────────────
+find_package(CURL REQUIRED)
+
 # ─── Boost ───────────────────────────────────────────────────────────────────
 find_package(Boost REQUIRED COMPONENTS filesystem thread)
 
@@ -39,6 +42,8 @@ find_package(Boost REQUIRED COMPONENTS filesystem thread)
 set(SOURCES
     src/main.cpp
     src/services/ApiService.cpp
+    src/services/LocalApiService.cpp
+    src/services/RestApiService.cpp
     src/services/SiteConfig.cpp
     src/ui/RestaurantApp.cpp
     src/widgets/ManagerView.cpp
@@ -53,6 +58,7 @@ add_executable(restaurant_pos ${SOURCES})
 target_include_directories(restaurant_pos PRIVATE
     ${SQLITE3_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
+    ${CURL_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/src
 )
 
@@ -63,6 +69,7 @@ target_link_libraries(restaurant_pos PRIVATE
     ${WTDBO_SQLITE3_LIB}
     ${SQLITE3_LIBRARIES}
     ${Boost_LIBRARIES}
+    CURL::libcurl
     pthread
 )
 

@@ -11,7 +11,7 @@
 #include <memory>
 #include <vector>
 
-#include "../services/ApiService.h"
+#include "../services/IApiService.h"
 
 struct CartItem {
     long long menuItemId;
@@ -22,7 +22,7 @@ struct CartItem {
 
 class FrontDeskView : public Wt::WContainerWidget {
 public:
-    FrontDeskView(std::shared_ptr<ApiService> api, long long restaurantId);
+    FrontDeskView(std::shared_ptr<IApiService> api, long long restaurantId);
 
 private:
     void buildMenuBrowser(Wt::WContainerWidget* parent);
@@ -34,7 +34,7 @@ private:
     void submitOrder();
     void refreshActiveOrders();
 
-    std::shared_ptr<ApiService> api_;
+    std::shared_ptr<IApiService> api_;
     long long restaurantId_;
 
     // Menu browsing

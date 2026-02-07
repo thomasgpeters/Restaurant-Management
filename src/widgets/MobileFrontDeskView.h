@@ -10,7 +10,7 @@
 #include <memory>
 #include <vector>
 
-#include "../services/ApiService.h"
+#include "../services/IApiService.h"
 
 class RestaurantApp;  // forward declaration
 
@@ -35,7 +35,7 @@ enum class MobileScreen {
 
 class MobileFrontDeskView : public Wt::WContainerWidget {
 public:
-    MobileFrontDeskView(std::shared_ptr<ApiService> api, long long restaurantId,
+    MobileFrontDeskView(std::shared_ptr<IApiService> api, long long restaurantId,
                         RestaurantApp* app = nullptr, bool isTablet = false);
 
 private:
@@ -67,7 +67,7 @@ private:
     // Order submission
     void submitOrder();
 
-    std::shared_ptr<ApiService> api_;
+    std::shared_ptr<IApiService> api_;
     long long restaurantId_;
     RestaurantApp* app_ = nullptr;  // for header cart updates
     bool isTablet_ = false;         // tablet: split panel, phone: sequential

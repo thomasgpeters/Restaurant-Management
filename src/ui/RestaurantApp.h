@@ -10,16 +10,16 @@
 #include <functional>
 #include <memory>
 
-#include "../services/ApiService.h"
+#include "../services/IApiService.h"
 #include "../services/SiteConfig.h"
 
 class RestaurantApp : public Wt::WApplication {
 public:
     RestaurantApp(const Wt::WEnvironment& env,
-                  std::shared_ptr<ApiService> apiService,
+                  std::shared_ptr<IApiService> apiService,
                   std::shared_ptr<SiteConfig> siteConfig);
 
-    static std::shared_ptr<ApiService> sharedApiService;
+    static std::shared_ptr<IApiService> sharedApiService;
     static std::shared_ptr<SiteConfig> sharedSiteConfig;
 
     // Called by MobileFrontDeskView to update the header cart bubble
@@ -50,7 +50,7 @@ private:
     bool detectMobileDevice();
     void onTouchDetected(const std::string& info);
 
-    std::shared_ptr<ApiService> api_;
+    std::shared_ptr<IApiService> api_;
     std::shared_ptr<SiteConfig> siteConfig_;
     bool isMobile_ = false;
     bool isTablet_ = false;  // tablet vs phone (for split-panel vs sequential menu)

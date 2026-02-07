@@ -10,13 +10,13 @@
 #include <Wt/WTabWidget.h>
 #include <memory>
 
-#include "../services/ApiService.h"
+#include "../services/IApiService.h"
 
 class RestaurantApp;
 
 class ManagerView : public Wt::WContainerWidget {
 public:
-    ManagerView(std::shared_ptr<ApiService> api, long long restaurantId,
+    ManagerView(std::shared_ptr<IApiService> api, long long restaurantId,
                 RestaurantApp* app = nullptr);
 
 private:
@@ -28,7 +28,7 @@ private:
     void refreshOrders();
     void refreshMenu();
 
-    std::shared_ptr<ApiService> api_;
+    std::shared_ptr<IApiService> api_;
     long long restaurantId_;
     RestaurantApp* app_ = nullptr;
 

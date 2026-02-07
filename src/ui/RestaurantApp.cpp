@@ -16,11 +16,11 @@
 #include "../widgets/MobileFrontDeskView.h"
 #include "../widgets/KitchenView.h"
 
-std::shared_ptr<ApiService> RestaurantApp::sharedApiService = nullptr;
+std::shared_ptr<IApiService> RestaurantApp::sharedApiService = nullptr;
 std::shared_ptr<SiteConfig> RestaurantApp::sharedSiteConfig = nullptr;
 
 RestaurantApp::RestaurantApp(const Wt::WEnvironment& env,
-                             std::shared_ptr<ApiService> apiService,
+                             std::shared_ptr<IApiService> apiService,
                              std::shared_ptr<SiteConfig> siteConfig)
     : Wt::WApplication(env), api_(apiService), siteConfig_(siteConfig),
       touchDetected_(this, "touchDetected"),
@@ -306,12 +306,11 @@ void RestaurantApp::showLoginScreen() {
     auto restCombo = restGroup->addWidget(std::make_unique<Wt::WComboBox>());
     restCombo->addStyleClass("form-control");
 
-    Wt::Dbo::Transaction t(api_->session());
     auto restaurants = api_->getRestaurants();
     std::vector<long long> restIds;
     for (auto& r : restaurants) {
-        restCombo->addItem(r->name + " (" + r->cuisine_type + ")");
-        restIds.push_back(r.id());
+        restCombo->addItem(r.name + " (" + r.cuisine_type + ")");
+        restIds.push_back(r.id);
     }
 
     // Role selection
@@ -336,9 +335,8 @@ void RestaurantApp::showLoginScreen() {
 
         currentRestaurantId_ = restIds[restIdx];
 
-        Wt::Dbo::Transaction t(api_->session());
         auto rest = api_->getRestaurant(currentRestaurantId_);
-        std::string restName = rest->name;
+        std::string restName = rest.name;
 
         switch (roleIdx) {
             case 0:

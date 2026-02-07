@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iomanip>
 
-ManagerView::ManagerView(std::shared_ptr<ApiService> api, long long restaurantId,
+ManagerView::ManagerView(std::shared_ptr<IApiService> api, long long restaurantId,
                          RestaurantApp* app)
     : api_(api), restaurantId_(restaurantId), app_(app)
 {
@@ -69,8 +69,6 @@ void ManagerView::buildDashboard(Wt::WContainerWidget* parent) {
 }
 
 void ManagerView::refreshDashboard() {
-    Wt::Dbo::Transaction t(api_->session());
-
     statTotalOrders_->setText(std::to_string(api_->getOrderCount(restaurantId_)));
 
     std::stringstream ss;
@@ -93,7 +91,6 @@ void ManagerView::buildOrdersPanel(Wt::WContainerWidget* parent) {
 void ManagerView::refreshOrders() {
     ordersContainer_->clear();
 
-    Wt::Dbo::Transaction t(api_->session());
     auto orders = api_->getOrders(restaurantId_);
 
     if (orders.empty()) {
@@ -114,27 +111,27 @@ void ManagerView::refreshOrders() {
 
     int row = 1;
     for (auto& order : orders) {
-        long long oid = order.id();
+        long long oid = order.id;
         table->elementAt(row, 0)->addWidget(
             std::make_unique<Wt::WText>(std::to_string(oid)));
         table->elementAt(row, 1)->addWidget(
-            std::make_unique<Wt::WText>(std::to_string(order->table_number)));
+            std::make_unique<Wt::WText>(std::to_string(order.table_number)));
         table->elementAt(row, 2)->addWidget(
-            std::make_unique<Wt::WText>(order->customer_name));
+            std::make_unique<Wt::WText>(order.customer_name));
 
         std::stringstream ss;
-        ss << "$" << std::fixed << std::setprecision(2) << order->total;
+        ss << "$" << std::fixed << std::setprecision(2) << order.total;
         table->elementAt(row, 3)->addWidget(std::make_unique<Wt::WText>(ss.str()));
 
         auto statusText = table->elementAt(row, 4)->addWidget(
-            std::make_unique<Wt::WText>(order->status));
+            std::make_unique<Wt::WText>(order.status));
         statusText->addStyleClass("status-badge status-" +
-            std::string(order->status == "Pending" ? "pending" :
-                       order->status == "In Progress" ? "progress" :
-                       order->status == "Ready" ? "ready" :
-                       order->status == "Served" ? "served" : "cancelled"));
+            std::string(order.status == "Pending" ? "pending" :
+                       order.status == "In Progress" ? "progress" :
+                       order.status == "Ready" ? "ready" :
+                       order.status == "Served" ? "served" : "cancelled"));
 
-        if (order->status != "Served" && order->status != "Cancelled") {
+        if (order.status != "Served" && order.status != "Cancelled") {
             auto cancelBtn = table->elementAt(row, 5)->addWidget(
                 std::make_unique<Wt::WPushButton>("Cancel"));
             cancelBtn->addStyleClass("btn btn-danger btn-sm");
@@ -144,7 +141,7 @@ void ManagerView::refreshOrders() {
                 refreshDashboard();
             });
 
-            if (order->status == "Ready") {
+            if (order.status == "Ready") {
                 auto serveBtn = table->elementAt(row, 5)->addWidget(
                     std::make_unique<Wt::WPushButton>("Mark Served"));
                 serveBtn->addStyleClass("btn btn-success btn-sm");
@@ -171,31 +168,30 @@ void ManagerView::buildMenuPanel(Wt::WContainerWidget* parent) {
 void ManagerView::refreshMenu() {
     menuContainer_->clear();
 
-    Wt::Dbo::Transaction t(api_->session());
     auto categories = api_->getCategories(restaurantId_);
 
     for (auto& cat : categories) {
         auto catBlock = menuContainer_->addWidget(std::make_unique<Wt::WContainerWidget>());
         catBlock->addStyleClass("menu-category-block");
         catBlock->addWidget(std::make_unique<Wt::WText>(
-            "<h4>" + cat->name + "</h4>"))->addStyleClass("category-title");
+            "<h4>" + cat.name + "</h4>"))->addStyleClass("category-title");
 
-        auto items = api_->getMenuItemsByCategory(cat.id());
+        auto items = api_->getMenuItemsByCategory(cat.id);
         for (auto& item : items) {
-            long long itemId = item.id();
+            long long itemId = item.id;
             auto itemRow = catBlock->addWidget(std::make_unique<Wt::WContainerWidget>());
             itemRow->addStyleClass("menu-item-row");
 
             std::stringstream priceStr;
-            priceStr << "$" << std::fixed << std::setprecision(2) << item->price;
+            priceStr << "$" << std::fixed << std::setprecision(2) << item.price;
 
-            itemRow->addWidget(std::make_unique<Wt::WText>(item->name))
+            itemRow->addWidget(std::make_unique<Wt::WText>(item.name))
                 ->addStyleClass("menu-item-name");
             itemRow->addWidget(std::make_unique<Wt::WText>(priceStr.str()))
                 ->addStyleClass("menu-item-price");
 
             auto toggle = itemRow->addWidget(std::make_unique<Wt::WCheckBox>("Available"));
-            toggle->setChecked(item->available);
+            toggle->setChecked(item.available);
             toggle->addStyleClass("menu-item-toggle");
             toggle->changed().connect([this, itemId, toggle] {
                 api_->updateMenuItemAvailability(itemId, toggle->isChecked());

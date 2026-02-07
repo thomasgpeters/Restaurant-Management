@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iomanip>
 
-FrontDeskView::FrontDeskView(std::shared_ptr<ApiService> api, long long restaurantId)
+FrontDeskView::FrontDeskView(std::shared_ptr<IApiService> api, long long restaurantId)
     : api_(api), restaurantId_(restaurantId)
 {
     addStyleClass("frontdesk-view");
@@ -37,13 +37,12 @@ void FrontDeskView::buildMenuBrowser(Wt::WContainerWidget* parent) {
     menuItemsContainer_->addStyleClass("menu-items-grid");
 
     // Load categories
-    Wt::Dbo::Transaction t(api_->session());
     auto categories = api_->getCategories(restaurantId_);
     bool first = true;
     for (auto& cat : categories) {
-        long long catId = cat.id();
+        long long catId = cat.id;
         auto btn = categoryContainer_->addWidget(
-            std::make_unique<Wt::WPushButton>(cat->name));
+            std::make_unique<Wt::WPushButton>(cat.name));
         btn->addStyleClass("btn btn-category");
         if (first) btn->addStyleClass("active");
         btn->clicked().connect([this, catId] {
@@ -59,26 +58,25 @@ void FrontDeskView::buildMenuBrowser(Wt::WContainerWidget* parent) {
 void FrontDeskView::showCategoryItems(long long categoryId) {
     menuItemsContainer_->clear();
 
-    Wt::Dbo::Transaction t(api_->session());
     auto items = api_->getMenuItemsByCategory(categoryId);
 
     for (auto& item : items) {
-        if (!item->available) continue;
+        if (!item.available) continue;
 
-        long long itemId = item.id();
-        std::string itemName = item->name;
-        double itemPrice = item->price;
+        long long itemId = item.id;
+        std::string itemName = item.name;
+        double itemPrice = item.price;
 
         auto card = menuItemsContainer_->addWidget(std::make_unique<Wt::WContainerWidget>());
         card->addStyleClass("menu-card");
 
-        card->addWidget(std::make_unique<Wt::WText>(item->name))
+        card->addWidget(std::make_unique<Wt::WText>(item.name))
             ->addStyleClass("menu-card-name");
-        card->addWidget(std::make_unique<Wt::WText>(item->description))
+        card->addWidget(std::make_unique<Wt::WText>(item.description))
             ->addStyleClass("menu-card-desc");
 
         std::stringstream ss;
-        ss << "$" << std::fixed << std::setprecision(2) << item->price;
+        ss << "$" << std::fixed << std::setprecision(2) << item.price;
         card->addWidget(std::make_unique<Wt::WText>(ss.str()))
             ->addStyleClass("menu-card-price");
 
@@ -251,7 +249,7 @@ void FrontDeskView::submitOrder() {
     std::string notes = notesEdit_->text().toUTF8();
 
     auto order = api_->createOrder(restaurantId_, tableNum, custName, notes);
-    long long orderId = order.id();
+    long long orderId = order.id;
 
     for (auto& ci : cart_) {
         api_->addOrderItem(orderId, ci.menuItemId, ci.quantity, "");
@@ -268,7 +266,6 @@ void FrontDeskView::submitOrder() {
 void FrontDeskView::refreshActiveOrders() {
     activeOrdersContainer_->clear();
 
-    Wt::Dbo::Transaction t(api_->session());
     auto orders = api_->getActiveOrders(restaurantId_);
 
     if (orders.empty()) {
@@ -278,7 +275,7 @@ void FrontDeskView::refreshActiveOrders() {
     }
 
     for (auto& order : orders) {
-        long long oid = order.id();
+        long long oid = order.id;
         auto card = activeOrdersContainer_->addWidget(
             std::make_unique<Wt::WContainerWidget>());
         card->addStyleClass("order-card");
@@ -290,14 +287,14 @@ void FrontDeskView::refreshActiveOrders() {
             "Order #" + std::to_string(oid)))
             ->addStyleClass("order-id");
         headerRow->addWidget(std::make_unique<Wt::WText>(
-            "Table " + std::to_string(order->table_number)))
+            "Table " + std::to_string(order.table_number)))
             ->addStyleClass("order-table");
 
-        auto statusBadge = headerRow->addWidget(std::make_unique<Wt::WText>(order->status));
+        auto statusBadge = headerRow->addWidget(std::make_unique<Wt::WText>(order.status));
         statusBadge->addStyleClass("status-badge status-" +
-            std::string(order->status == "Pending" ? "pending" :
-                       order->status == "In Progress" ? "progress" :
-                       order->status == "Ready" ? "ready" : "other"));
+            std::string(order.status == "Pending" ? "pending" :
+                       order.status == "In Progress" ? "progress" :
+                       order.status == "Ready" ? "ready" : "other"));
 
         // Show items
         auto items = api_->getOrderItems(oid);
@@ -305,11 +302,11 @@ void FrontDeskView::refreshActiveOrders() {
             auto itemLine = card->addWidget(std::make_unique<Wt::WContainerWidget>());
             itemLine->addStyleClass("order-item-line");
             itemLine->addWidget(std::make_unique<Wt::WText>(
-                std::to_string(oi->quantity) + "x " + oi->menu_item->name));
+                std::to_string(oi.quantity) + "x " + oi.menu_item_name));
 
             std::stringstream ss;
             ss << "$" << std::fixed << std::setprecision(2)
-               << (oi->unit_price * oi->quantity);
+               << (oi.unit_price * oi.quantity);
             itemLine->addWidget(std::make_unique<Wt::WText>(ss.str()))
                 ->addStyleClass("item-price");
         }
@@ -318,11 +315,11 @@ void FrontDeskView::refreshActiveOrders() {
         footerRow->addStyleClass("order-card-footer");
 
         std::stringstream ss;
-        ss << "Total: $" << std::fixed << std::setprecision(2) << order->total;
+        ss << "Total: $" << std::fixed << std::setprecision(2) << order.total;
         footerRow->addWidget(std::make_unique<Wt::WText>(ss.str()))
             ->addStyleClass("order-total");
 
-        if (order->status == "Ready") {
+        if (order.status == "Ready") {
             auto serveBtn = footerRow->addWidget(
                 std::make_unique<Wt::WPushButton>("Mark Served"));
             serveBtn->addStyleClass("btn btn-success btn-sm");

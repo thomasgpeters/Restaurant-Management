@@ -2,7 +2,7 @@
 #include <Wt/WServer.h>
 
 #include "ui/RestaurantApp.h"
-#include "services/ApiService.h"
+#include "services/LocalApiService.h"
 #include "services/SiteConfig.h"
 
 #include <memory>
@@ -13,8 +13,8 @@ int main(int argc, char** argv) {
         // Initialize shared site configuration
         auto siteConfig = std::make_shared<SiteConfig>("data/site-config.json");
 
-        // Initialize shared API service (single DB connection for the process)
-        auto apiService = std::make_shared<ApiService>("restaurant_pos.db");
+        // Initialize shared API service (LocalApiService wraps Wt::Dbo/SQLite)
+        auto apiService = std::make_shared<LocalApiService>("restaurant_pos.db");
         apiService->initializeDatabase();
         apiService->seedDatabase();
 
@@ -27,7 +27,10 @@ int main(int argc, char** argv) {
         server.addEntryPoint(
             Wt::EntryPointType::Application,
             [apiService, siteConfig](const Wt::WEnvironment& env) {
-                return std::make_unique<RestaurantApp>(env, apiService, siteConfig);
+                return std::make_unique<RestaurantApp>(
+                    env,
+                    std::static_pointer_cast<IApiService>(apiService),
+                    siteConfig);
             }
         );
 

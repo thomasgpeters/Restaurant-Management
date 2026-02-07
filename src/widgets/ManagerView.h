@@ -45,5 +45,6 @@ private:
     Wt::WLineEdit* configStoreName_ = nullptr;
     Wt::WLineEdit* configStoreLogo_ = nullptr;
     Wt::WLineEdit* configApiUrl_ = nullptr;
+    Wt::WComboBox* configDataSource_ = nullptr;
     Wt::WText* configStatus_ = nullptr;
 };

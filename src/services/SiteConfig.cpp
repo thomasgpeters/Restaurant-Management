@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <cstdlib>
 #include <sys/stat.h>
 
 // Minimal JSON helpers (no external library needed)
@@ -88,21 +89,29 @@ void SiteConfig::load() {
     if (!file.is_open()) {
         std::cout << "[SiteConfig] No config file at " << configPath_
                   << ", using defaults." << std::endl;
-        return;
+    } else {
+        std::stringstream ss;
+        ss << file.rdbuf();
+        std::string json = ss.str();
+        file.close();
+
+        storeName_  = jsonGet(json, "store_name");
+        storeLogo_  = jsonGet(json, "store_logo");
+        std::string url = jsonGet(json, "api_base_url");
+        if (!url.empty()) apiBaseUrl_ = url;
+        std::string dst = jsonGet(json, "data_source_type");
+        if (!dst.empty()) dataSourceType_ = dst;
     }
 
-    std::stringstream ss;
-    ss << file.rdbuf();
-    std::string json = ss.str();
-    file.close();
-
-    storeName_  = jsonGet(json, "store_name");
-    storeLogo_  = jsonGet(json, "store_logo");
-    std::string url = jsonGet(json, "api_base_url");
-    if (!url.empty()) apiBaseUrl_ = url;
+    // Environment variable overrides config file (always checked)
+    const char* envDst = std::getenv("DATA_SOURCE_TYPE");
+    if (envDst && (std::string(envDst) == "ALS" || std::string(envDst) == "LOCAL")) {
+        dataSourceType_ = envDst;
+    }
 
     std::cout << "[SiteConfig] Loaded: store=" << storeName_
-              << " api=" << apiBaseUrl_ << std::endl;
+              << " api=" << apiBaseUrl_
+              << " data_source=" << dataSourceType_ << std::endl;
 }
 
 void SiteConfig::save() const {
@@ -117,7 +126,8 @@ void SiteConfig::save() const {
     file << "{\n"
          << "  \"store_name\": \"" << jsonEscape(storeName_) << "\",\n"
          << "  \"store_logo\": \"" << jsonEscape(storeLogo_) << "\",\n"
-         << "  \"api_base_url\": \"" << jsonEscape(apiBaseUrl_) << "\"\n"
+         << "  \"api_base_url\": \"" << jsonEscape(apiBaseUrl_) << "\",\n"
+         << "  \"data_source_type\": \"" << jsonEscape(dataSourceType_) << "\"\n"
          << "}\n";
 
     file.close();
@@ -146,6 +156,11 @@ std::string SiteConfig::apiBaseUrl() const {
     return apiBaseUrl_;
 }
 
+std::string SiteConfig::dataSourceType() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return dataSourceType_;
+}
+
 // ── Setters ──
 
 void SiteConfig::setStoreName(const std::string& name) {
@@ -166,13 +181,21 @@ void SiteConfig::setApiBaseUrl(const std::string& url) {
     save();
 }
 
+void SiteConfig::setDataSourceType(const std::string& type) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    dataSourceType_ = type;
+    save();
+}
+
 void SiteConfig::update(const std::string& storeName,
                         const std::string& storeLogo,
-                        const std::string& apiBaseUrl)
+                        const std::string& apiBaseUrl,
+                        const std::string& dataSourceType)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     storeName_ = storeName;
     storeLogo_ = storeLogo;
     if (!apiBaseUrl.empty()) apiBaseUrl_ = apiBaseUrl;
+    if (!dataSourceType.empty()) dataSourceType_ = dataSourceType;
     save();
 }

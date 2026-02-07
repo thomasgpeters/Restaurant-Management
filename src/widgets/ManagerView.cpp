@@ -245,12 +245,29 @@ void ManagerView::buildConfigPanel(Wt::WContainerWidget* parent) {
         "Example: <code>http://localhost:5656/api</code></small>"));
     helpText->addStyleClass("form-help-text");
 
+    // Data Source Type
+    auto dsGroup = form->addWidget(std::make_unique<Wt::WContainerWidget>());
+    dsGroup->addStyleClass("form-group");
+    dsGroup->addWidget(std::make_unique<Wt::WText>("Data Source"))
+        ->addStyleClass("form-label");
+    configDataSource_ = dsGroup->addWidget(std::make_unique<Wt::WComboBox>());
+    configDataSource_->addItem("LOCAL — SQLite (embedded)");
+    configDataSource_->addItem("ALS — ApiLogicServer (enterprise)");
+    configDataSource_->addStyleClass("form-control");
+
+    auto dsHelp = dsGroup->addWidget(std::make_unique<Wt::WText>(
+        "<small>Select <b>LOCAL</b> for standalone SQLite or <b>ALS</b> to "
+        "connect to ApiLogicServer. Changing this requires a server restart. "
+        "Can also be set via <code>DATA_SOURCE_TYPE</code> environment variable.</small>"));
+    dsHelp->addStyleClass("form-help-text");
+
     // Load current values from config
     if (app_ && app_->siteConfig()) {
         auto cfg = app_->siteConfig();
         configStoreName_->setText(cfg->storeName());
         configStoreLogo_->setText(cfg->storeLogo());
         configApiUrl_->setText(cfg->apiBaseUrl());
+        configDataSource_->setCurrentIndex(cfg->dataSourceType() == "ALS" ? 1 : 0);
     }
 
     // Status message area
@@ -271,16 +288,22 @@ void ManagerView::buildConfigPanel(Wt::WContainerWidget* parent) {
         }
 
         auto cfg = app_->siteConfig();
+        std::string dsType = configDataSource_->currentIndex() == 1 ? "ALS" : "LOCAL";
         cfg->update(
             configStoreName_->text().toUTF8(),
             configStoreLogo_->text().toUTF8(),
-            configApiUrl_->text().toUTF8()
+            configApiUrl_->text().toUTF8(),
+            dsType
         );
 
         // Refresh the header branding immediately
         app_->refreshHeaderBranding();
 
-        configStatus_->setText("Configuration saved successfully.");
+        std::string msg = "Configuration saved successfully.";
+        if (dsType != cfg->dataSourceType()) {
+            msg += " Restart the server for the data source change to take effect.";
+        }
+        configStatus_->setText(msg);
         configStatus_->setStyleClass("config-status config-success");
     });
 
@@ -293,6 +316,7 @@ void ManagerView::buildConfigPanel(Wt::WContainerWidget* parent) {
             configStoreName_->setText(cfg->storeName());
             configStoreLogo_->setText(cfg->storeLogo());
             configApiUrl_->setText(cfg->apiBaseUrl());
+            configDataSource_->setCurrentIndex(cfg->dataSourceType() == "ALS" ? 1 : 0);
             configStatus_->setText("Values reset from saved config.");
             configStatus_->setStyleClass("config-status config-info");
         }

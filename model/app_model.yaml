@@ -1,0 +1,545 @@
+about:
+  date: February 06, 2026 21:51:58
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+application:
+  app:
+    description: generated Ontimize application
+    menu_group:
+      data:
+        icon: edit_square
+        menu_item:
+          AppUser:
+            icon: edit_square
+            menu_name: AppUser
+            menu_title: AppUser
+            page:
+              detail:
+                columns: username,restaurant_id,display_name,role,id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: AppUser
+                typescript_name: detail_component.jinja
+                visible_columns: username,restaurant_id,display_name,role,id
+              home:
+                columns: username,restaurant_id,display_name,role,id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: AppUser
+                typescript_name: home_template.jinja
+                visible_columns: username,restaurant_id,display_name,role,id
+              new:
+                columns: username,restaurant_id,display_name,role,id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: AppUser
+                typescript_name: new_component.jinja
+                visible_columns: username,restaurant_id,display_name,role,id
+            template_name: module.jinja
+          Category:
+            icon: edit_square
+            menu_name: Category
+            menu_title: Category
+            page:
+              detail:
+                columns: name,restaurant_id,sort_order,id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Category
+                typescript_name: detail_component.jinja
+                visible_columns: name,restaurant_id,sort_order,id
+              home:
+                columns: name,restaurant_id,sort_order,id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Category
+                typescript_name: home_template.jinja
+                visible_columns: name,restaurant_id,sort_order,id
+              new:
+                columns: name,restaurant_id,sort_order,id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Category
+                typescript_name: new_component.jinja
+                visible_columns: name,restaurant_id,sort_order,id
+            template_name: module.jinja
+          MenuItem:
+            icon: edit_square
+            menu_name: MenuItem
+            menu_title: MenuItem
+            page:
+              detail:
+                columns: name,category_id,description,price,available,id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: MenuItem
+                typescript_name: detail_component.jinja
+                visible_columns: name,category_id,description,price,available,id
+              home:
+                columns: name,category_id,description,price,available,id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: MenuItem
+                typescript_name: home_template.jinja
+                visible_columns: name,category_id,description,price,available,id
+              new:
+                columns: name,category_id,description,price,available,id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: MenuItem
+                typescript_name: new_component.jinja
+                visible_columns: name,category_id,description,price,available,id
+            template_name: module.jinja
+          Order:
+            icon: edit_square
+            menu_name: Order
+            menu_title: Order
+            page:
+              detail:
+                columns: customer_name,restaurant_id,table_number,status,notes,created_at,updated_at,total,id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Order
+                typescript_name: detail_component.jinja
+                visible_columns: customer_name,restaurant_id,table_number,status,notes,created_at,updated_at,total,id
+              home:
+                columns: customer_name,restaurant_id,table_number,status,notes,created_at,updated_at,total,id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Order
+                typescript_name: home_template.jinja
+                visible_columns: customer_name,restaurant_id,table_number,status,notes,created_at,updated_at,total,id
+              new:
+                columns: customer_name,restaurant_id,table_number,status,notes,created_at,updated_at,total,id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Order
+                typescript_name: new_component.jinja
+                visible_columns: customer_name,restaurant_id,table_number,status,notes,created_at,updated_at,total,id
+            template_name: module.jinja
+          OrderItem:
+            icon: edit_square
+            menu_name: OrderItem
+            menu_title: OrderItem
+            page:
+              detail:
+                columns: id,menu_item_id,order_id,quantity,unit_price,special_instructions
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: OrderItem
+                typescript_name: detail_component.jinja
+                visible_columns: id,menu_item_id,order_id,quantity,unit_price,special_instructions
+              home:
+                columns: id,menu_item_id,order_id,quantity,unit_price,special_instructions
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: OrderItem
+                typescript_name: home_template.jinja
+                visible_columns: id,menu_item_id,order_id,quantity,unit_price,special_instructions
+              new:
+                columns: id,menu_item_id,order_id,quantity,unit_price,special_instructions
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: OrderItem
+                typescript_name: new_component.jinja
+                visible_columns: id,menu_item_id,order_id,quantity,unit_price,special_instructions
+            template_name: module.jinja
+          Restaurant:
+            icon: edit_square
+            menu_name: Restaurant
+            menu_title: Restaurant
+            page:
+              detail:
+                columns: name,cuisine_type,description,id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Restaurant
+                typescript_name: detail_component.jinja
+                visible_columns: name,cuisine_type,description,id
+              home:
+                columns: name,cuisine_type,description,id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Restaurant
+                typescript_name: home_template.jinja
+                visible_columns: name,cuisine_type,description,id
+              new:
+                columns: name,cuisine_type,description,id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Restaurant
+                typescript_name: new_component.jinja
+                visible_columns: name,cuisine_type,description,id
+            template_name: module.jinja
+          SiteConfig:
+            icon: edit_square
+            menu_name: SiteConfig
+            menu_title: SiteConfig
+            page:
+              detail:
+                columns: id,config_key,config_value
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: SiteConfig
+                typescript_name: detail_component.jinja
+                visible_columns: id,config_key,config_value
+              home:
+                columns: id,config_key,config_value
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: SiteConfig
+                typescript_name: home_template.jinja
+                visible_columns: id,config_key,config_value
+              new:
+                columns: id,config_key,config_value
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: SiteConfig
+                typescript_name: new_component.jinja
+                visible_columns: id,config_key,config_value
+            template_name: module.jinja
+        menu_name: data
+        menu_title: data
+        opened: true
+    name: app
+authentication: '{system-default}'
+entities:
+  AppUser:
+    columns:
+    - label: ' username*'
+      name: username
+      required: true
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: restaurant_id
+      required: true
+      template: integer
+      type: INTEGER
+    - name: display_name
+      required: true
+      template: text
+      type: VARCHAR
+    - name: role
+      required: true
+      template: text
+      type: VARCHAR
+    - name: id
+      template: integer
+      type: INTEGER
+    favorite: username
+    hidden: {}
+    label: AppUser
+    primary_key:
+    - id
+    tab_groups:
+    - direction: toone
+      fks:
+      - restaurant_id
+      name: restaurant
+      resource: Restaurant
+    type: AppUser
+  Category:
+    columns:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: restaurant_id
+      required: true
+      template: integer
+      type: INTEGER
+    - default: '0'
+      name: sort_order
+      required: true
+      template: integer
+      type: INTEGER
+    - name: id
+      template: integer
+      type: INTEGER
+    favorite: name
+    hidden: {}
+    label: Category
+    primary_key:
+    - id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - category_id
+      name: MenuItemList
+      resource: MenuItem
+    - direction: toone
+      fks:
+      - restaurant_id
+      name: restaurant
+      resource: Restaurant
+    type: Category
+  MenuItem:
+    columns:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: category_id
+      required: true
+      template: integer
+      type: INTEGER
+    - name: description
+      required: true
+      template: text
+      type: TEXT
+    - default: '0.00'
+      name: price
+      required: true
+      template: real
+      type: NUMERIC
+    - name: available
+      required: true
+      type: Boolean
+    - name: id
+      template: integer
+      type: INTEGER
+    favorite: name
+    hidden: {}
+    label: MenuItem
+    primary_key:
+    - id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - menu_item_id
+      name: OrderItemList
+      resource: OrderItem
+    - direction: toone
+      fks:
+      - category_id
+      name: category
+      resource: Category
+    type: MenuItem
+  Order:
+    columns:
+    - label: ' customer_name*'
+      name: customer_name
+      required: true
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: restaurant_id
+      required: true
+      template: integer
+      type: INTEGER
+    - default: '0'
+      name: table_number
+      required: true
+      template: integer
+      type: INTEGER
+    - name: status
+      required: true
+      template: text
+      type: VARCHAR
+    - name: notes
+      required: true
+      template: text
+      type: TEXT
+    - name: created_at
+      required: true
+      type: DATETIME
+    - name: updated_at
+      required: true
+      type: DATETIME
+    - default: '0.00'
+      name: total
+      required: true
+      template: real
+      type: NUMERIC
+    - name: id
+      template: integer
+      type: INTEGER
+    favorite: customer_name
+    hidden: {}
+    label: Order
+    primary_key:
+    - id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - order_id
+      name: OrderItemList
+      resource: OrderItem
+    - direction: toone
+      fks:
+      - restaurant_id
+      name: restaurant
+      resource: Restaurant
+    type: Order
+  OrderItem:
+    columns:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+      template: integer
+      type: INTEGER
+    - name: menu_item_id
+      required: true
+      template: integer
+      type: INTEGER
+    - name: order_id
+      required: true
+      template: integer
+      type: INTEGER
+    - default: '1'
+      name: quantity
+      required: true
+      template: integer
+      type: INTEGER
+    - default: '0.00'
+      name: unit_price
+      required: true
+      template: real
+      type: NUMERIC
+    - name: special_instructions
+      required: true
+      template: text
+      type: TEXT
+    favorite: id
+    hidden: {}
+    label: OrderItem
+    primary_key:
+    - id
+    tab_groups:
+    - direction: toone
+      fks:
+      - menu_item_id
+      name: menu_item
+      resource: MenuItem
+    - direction: toone
+      fks:
+      - order_id
+      name: order
+      resource: Order
+    type: OrderItem
+  Restaurant:
+    columns:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: cuisine_type
+      required: true
+      template: text
+      type: VARCHAR
+    - name: description
+      required: true
+      template: text
+      type: TEXT
+    - name: id
+      template: integer
+      type: INTEGER
+    favorite: name
+    hidden: {}
+    label: Restaurant
+    primary_key:
+    - id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - restaurant_id
+      name: AppUserList
+      resource: AppUser
+    - direction: tomany
+      fks:
+      - restaurant_id
+      name: CategoryList
+      resource: Category
+    - direction: tomany
+      fks:
+      - restaurant_id
+      name: OrderList
+      resource: Order
+    type: Restaurant
+  SiteConfig:
+    columns:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+      template: integer
+      type: INTEGER
+    - name: config_key
+      required: true
+      template: text
+      type: VARCHAR
+    - name: config_value
+      required: true
+      template: text
+      type: TEXT
+    favorite: id
+    hidden: {}
+    label: SiteConfig
+    primary_key:
+    - id
+    type: SiteConfig
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    api_endpoint: http://localhost:5656/api
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: YYYY-MM-DD
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: false
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    mode: tab
+    pick_style: list
+    serviceType: JSONAPI
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: false

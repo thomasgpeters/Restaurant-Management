@@ -32,6 +32,9 @@ if(NOT SQLITE3_FOUND)
     find_path(SQLITE3_INCLUDE_DIRS sqlite3.h)
 endif()
 
+# ─── libcurl (for RestApiService HTTP client) ────────────────────────────────
+find_package(CURL REQUIRED)
+
 # ─── Boost ───────────────────────────────────────────────────────────────────
 find_package(Boost REQUIRED COMPONENTS filesystem thread)
 
@@ -39,9 +42,13 @@ find_package(Boost REQUIRED COMPONENTS filesystem thread)
 set(SOURCES
     src/main.cpp
     src/services/ApiService.cpp
+    src/services/LocalApiService.cpp
+    src/services/RestApiService.cpp
+    src/services/SiteConfig.cpp
     src/ui/RestaurantApp.cpp
     src/widgets/ManagerView.cpp
     src/widgets/FrontDeskView.cpp
+    src/widgets/MobileFrontDeskView.cpp
     src/widgets/KitchenView.cpp
 )
 
@@ -51,6 +58,7 @@ add_executable(restaurant_pos ${SOURCES})
 target_include_directories(restaurant_pos PRIVATE
     ${SQLITE3_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
+    ${CURL_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/src
 )
 
@@ -61,14 +69,18 @@ target_link_libraries(restaurant_pos PRIVATE
     ${WTDBO_SQLITE3_LIB}
     ${SQLITE3_LIBRARIES}
     ${Boost_LIBRARIES}
+    CURL::libcurl
     pthread
 )
 
 # ─── Suppress warnings from Wt headers ───────────────────────────────────────
-# Wt's WConfig.h defines WTHTTP_CONFIGURATION and WLogger.h uses sprintf;
-# treat Wt include dir as a SYSTEM include to suppress these warnings.
+# Wt's WLogger.h uses deprecated sprintf; suppress across GCC and Clang.
+# SYSTEM includes alone aren't enough on macOS Clang due to transitive headers.
 target_include_directories(restaurant_pos SYSTEM PRIVATE
     ${WT_INCLUDE_DIR}
+)
+target_compile_options(restaurant_pos PRIVATE
+    -Wno-deprecated-declarations
 )
 
 # ─── Copy resources to build directory ────────────────────────────────────────

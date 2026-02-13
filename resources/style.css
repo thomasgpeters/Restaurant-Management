@@ -69,6 +69,18 @@ body {
     padding: 0 24px;
 }
 
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-logo {
+    height: 36px;
+    width: auto;
+    border-radius: 6px;
+}
+
 .header-title {
     font-size: 22px;
     font-weight: 700;
@@ -82,6 +94,80 @@ body {
     background: rgba(255,255,255,0.15);
     padding: 6px 16px;
     border-radius: 20px;
+}
+
+/* ── Header Controls (right side group) ────────────────────────────────── */
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-logout-btn {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.header-logout-btn:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+/* Header cart bubble */
+.header-cart-bubble {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.header-cart-bubble:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+.header-cart-icon svg {
+    display: block;
+}
+
+.header-cart-count {
+    font-weight: 700;
+    font-size: 14px;
+    min-width: 16px;
+    text-align: center;
+}
+
+.header-cart-total {
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.9;
+    white-space: nowrap;
+}
+
+/* Bounce animation for header cart bubble */
+@keyframes header-bubble-bounce {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(1.12); }
+    50%  { transform: scale(0.95); }
+    70%  { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.header-cart-bubble.bounce {
+    animation: header-bubble-bounce 0.4s ease;
 }
 
 /* ── Footer ─────────────────────────────────────────────────────────────── */
@@ -463,6 +549,132 @@ body {
     min-width: 80px;
 }
 
+/* ── Manager Tab Widget (Bubble / Pill Nav) ──────────────────────────── */
+.manager-tabs {
+    margin-top: 16px;
+}
+
+.manager-tabs .Wt-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 6px;
+    margin: 0;
+    background: var(--color-bg-secondary, #f0f0f0);
+    border-radius: 50px;
+    border: none;
+    list-style: none;
+    width: fit-content;
+}
+
+.manager-tabs .Wt-tabs li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.manager-tabs .Wt-tabs li a {
+    display: block;
+    padding: 8px 22px;
+    text-decoration: none;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 50px;
+    border: none;
+    background: transparent;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+}
+
+.manager-tabs .Wt-tabs li a:hover {
+    color: var(--color-text);
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.manager-tabs .Wt-tabs li.active a {
+    color: #fff;
+    background: var(--color-primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.manager-panel {
+    border-radius: var(--radius);
+    margin-top: 12px;
+    min-height: 300px;
+}
+
+/* ── Site Configuration Form ───────────────────────────────────────────── */
+.config-description {
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+}
+
+.config-form {
+    max-width: 600px;
+}
+
+.config-form .form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: var(--color-text);
+}
+
+.form-help-text {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.form-help-text code {
+    background: rgba(0,0,0,0.06);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.config-status {
+    margin: 16px 0;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.config-status:empty {
+    display: none;
+}
+
+.config-success {
+    background: rgba(22, 163, 74, 0.1);
+    color: var(--color-success);
+    border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+.config-error {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--color-danger);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.config-info {
+    background: rgba(8, 145, 178, 0.1);
+    color: var(--color-info);
+    border: 1px solid rgba(8, 145, 178, 0.2);
+}
+
+.config-btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
 /* ── Category Tabs ──────────────────────────────────────────────────────── */
 .category-tabs {
     display: flex;
@@ -808,6 +1020,28 @@ body {
         padding: 4px 10px;
     }
 
+    .header-controls {
+        gap: 6px;
+    }
+
+    .header-logout-btn {
+        font-size: 11px;
+        padding: 4px 10px;
+    }
+
+    .header-cart-bubble {
+        padding: 4px 10px;
+        gap: 4px;
+    }
+
+    .header-cart-count {
+        font-size: 12px;
+    }
+
+    .header-cart-total {
+        font-size: 11px;
+    }
+
     .app-workspace {
         padding: 8px 10px;
         padding-bottom: calc(var(--footer-height) + 8px);
@@ -835,3 +1069,1456 @@ body {
         padding: 10px;
     }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Mobile Front Desk View (iPad and touch devices)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Mobile app shell ───────────────────────────────────────────────────── */
+.m-frontdesk {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--header-height) - var(--footer-height) - 60px);
+    position: relative;
+}
+
+.m-screen-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px 16px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* When split-panel is inside, container shouldn't scroll — panels scroll */
+.m-screen-container:has(.m-menu-split),
+.m-screen-container.m-split-mode {
+    overflow: hidden;
+    padding-bottom: 0;
+}
+
+/* ── Mobile view nav ────────────────────────────────────────────────────── */
+/* ── Bottom Tab Bar ─────────────────────────────────────────────────────── */
+.m-tab-bar {
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    padding: 4px 0;
+    flex-shrink: 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 50;
+}
+
+.m-tab {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 4px;
+    color: var(--color-text-muted);
+    transition: color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 56px;
+}
+
+.m-tab.active {
+    color: var(--color-primary);
+}
+
+.m-tab-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 11px;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.m-tab-icon-wrap {
+    position: relative;
+    display: inline-flex;
+}
+
+.m-cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: var(--color-danger);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 9px;
+    padding: 0 4px;
+}
+
+/* ── Screen Headers ─────────────────────────────────────────────────────── */
+.m-screen-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 0 12px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 12px;
+}
+
+.m-screen-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text);
+    flex: 1;
+}
+
+.m-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    background: transparent;
+    border: none;
+    color: var(--color-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 8px 4px;
+    -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
+}
+
+.m-header-action-btn {
+    background: var(--color-info);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* ── List Items (Category rows) ─────────────────────────────────────────── */
+.m-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.m-list-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: background 0.15s;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.04);
+}
+
+.m-list-item:active {
+    background: #f1f5f9;
+}
+
+.m-list-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.m-list-item-title {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.m-list-item-subtitle {
+    display: block;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+.m-list-chevron {
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+    opacity: 0.5;
+}
+
+/* ── Split-Panel Menu Browser (tablet only) ────────────────────────────── */
+.m-menu-split {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    gap: 0;
+}
+
+/* Left: category sidebar */
+.m-cat-panel {
+    width: 180px;
+    min-width: 160px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--color-border);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #f8fafc;
+}
+
+.m-cat-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border);
+    transition: background 0.15s;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.04);
+}
+
+.m-cat-item:active {
+    background: #e2e8f0;
+}
+
+.m-cat-item.active {
+    background: #fff;
+    border-left: 3px solid var(--color-primary);
+    font-weight: 600;
+}
+
+.m-cat-name {
+    font-size: 14px;
+    color: var(--color-text);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.m-cat-item.active .m-cat-name {
+    color: var(--color-primary);
+}
+
+.m-cat-count {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    background: #e2e8f0;
+    border-radius: 10px;
+    padding: 2px 8px;
+    flex-shrink: 0;
+    margin-left: 6px;
+}
+
+.m-cat-item.active .m-cat-count {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+}
+
+/* Right: items panel */
+.m-items-panel {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px 16px;
+}
+
+.m-items-panel-title {
+    display: block;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-text);
+    padding: 12px 0 10px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 10px;
+}
+
+/* Portrait tablet: wider category panel, enhanced styling */
+@media (orientation: portrait) and (min-width: 600px) {
+    .m-cat-panel {
+        width: 200px;
+        background: linear-gradient(180deg, #f1f5f9 0%, #f8fafc 100%);
+        border-right: 2px solid var(--color-border);
+    }
+
+    .m-cat-item {
+        padding: 16px 14px;
+        border-bottom: 1px solid var(--color-border);
+        background: transparent;
+    }
+
+    .m-cat-item.active {
+        background: #fff;
+        border-left: 3px solid var(--color-primary);
+        box-shadow: inset 0 0 0 0 transparent, 2px 0 4px rgba(0,0,0,0.04);
+    }
+
+    .m-cat-name {
+        font-size: 15px;
+    }
+
+    .m-cat-item.active .m-cat-name {
+        color: var(--color-primary);
+        font-weight: 700;
+    }
+
+    .m-cat-count {
+        font-size: 12px;
+        padding: 3px 10px;
+        border-radius: 12px;
+    }
+}
+
+/* Landscape tablet: wider sidebar, 2-column item grid */
+@media (orientation: landscape) and (min-width: 900px) {
+    .m-cat-panel {
+        width: 220px;
+    }
+
+    .m-items-panel .m-items-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
+
+/* ── Menu Item Cards ────────────────────────────────────────────────────── */
+.m-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.m-item-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 14px;
+    transition: border-color 0.15s;
+}
+
+.m-item-card:active {
+    border-color: var(--color-primary);
+}
+
+.m-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.m-item-name {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.m-item-desc {
+    display: block;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+    margin-top: 2px;
+}
+
+.m-item-price {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-success);
+    margin-top: 4px;
+}
+
+.m-add-btn {
+    flex-shrink: 0;
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    min-width: 72px;
+    min-height: 44px;
+}
+
+.m-add-btn:active {
+    background: var(--color-primary-dark);
+}
+
+/* ── Cart Screen ────────────────────────────────────────────────────────── */
+.m-cart-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.m-cart-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.m-cart-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.m-cart-item-name {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.m-cart-item-price {
+    display: block;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+/* ── Quantity Stepper ───────────────────────────────────────────────────── */
+.m-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.m-stepper-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: #f8fafc;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.m-stepper-btn:active {
+    background: #e2e8f0;
+}
+
+.m-stepper-value {
+    min-width: 36px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* ── Cart Footer ────────────────────────────────────────────────────────── */
+.m-cart-footer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 2px solid var(--color-border);
+}
+
+.m-cart-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.m-cart-total-label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.m-cart-total-amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* ── Action Buttons (mobile) ────────────────────────────────────────────── */
+.m-action-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    margin-bottom: 10px;
+    min-height: 52px;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.15s;
+}
+
+.m-action-btn:active {
+    opacity: 0.85;
+}
+
+.m-btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.m-btn-secondary {
+    background: #f1f5f9;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.m-btn-success {
+    background: var(--color-success);
+    color: #fff;
+}
+
+.m-action-btn-sm {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.m-place-order-btn {
+    margin-top: 20px;
+}
+
+/* ── Order Form ─────────────────────────────────────────────────────────── */
+.m-form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.m-form-group {
+    margin-bottom: 14px;
+}
+
+.m-form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.m-form-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    font-size: 16px;
+    background: #fff;
+    -webkit-appearance: none;
+    transition: border-color 0.15s;
+}
+
+.m-form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* ── Order Summary ──────────────────────────────────────────────────────── */
+.m-order-summary {
+    background: #f8fafc;
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-top: 8px;
+}
+
+.m-summary-title {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-muted);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.m-summary-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+}
+
+.m-summary-item {
+    font-size: 14px;
+}
+
+.m-summary-price {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.m-summary-total {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 2px solid var(--color-border);
+}
+
+.m-summary-total .m-summary-item {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.m-summary-total .m-summary-price {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--color-primary);
+}
+
+/* ── Empty State ────────────────────────────────────────────────────────── */
+.m-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.m-empty-icon {
+    margin-bottom: 16px;
+}
+
+.m-empty-title {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 6px;
+}
+
+.m-empty-subtitle {
+    display: block;
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin-bottom: 24px;
+}
+
+/* ── Confirmation Screen ────────────────────────────────────────────────── */
+.m-confirmation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.m-confirm-icon {
+    margin-bottom: 20px;
+}
+
+.m-confirm-title {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-success);
+    margin-bottom: 8px;
+}
+
+.m-confirm-subtitle {
+    display: block;
+    font-size: 15px;
+    color: var(--color-text-muted);
+    margin-bottom: 32px;
+}
+
+/* ── Active Orders (mobile) ─────────────────────────────────────────────── */
+.m-orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.m-order-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 14px;
+}
+
+.m-order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.m-order-id {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.m-order-table-num {
+    display: block;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+.m-status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.m-order-items {
+    margin-bottom: 8px;
+}
+
+.m-order-item-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 14px;
+}
+
+.m-order-item-price {
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.m-order-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-border);
+}
+
+.m-order-total {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Mobile-specific overrides (iPad + touch devices)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* When .is-mobile is on the root, adjust the app chrome */
+.is-mobile .app-workspace {
+    padding: 8px 0;
+    padding-bottom: calc(var(--footer-height) + 8px);
+    max-width: 100%;
+}
+
+/* Center login panel vertically & horizontally on mobile */
+.is-mobile .app-workspace.login-mode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.is-mobile .app-footer {
+    font-size: 10px;
+    height: 28px;
+}
+
+.is-mobile .login-panel {
+    margin: auto;
+    padding: 28px 24px;
+    width: calc(100% - 32px);
+    max-width: 460px;
+}
+
+/* Tablet portrait (768px+): 2-column grids for non-split views */
+@media (min-width: 768px) {
+    .m-screen-container > .m-items-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .m-orders-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .m-empty-state {
+        padding: 80px 40px;
+    }
+
+    .m-confirmation {
+        padding: 80px 40px;
+    }
+}
+
+/* Tablet landscape (1024px+): 3-column grid for non-split views */
+@media (min-width: 1024px) {
+    .m-screen-container > .m-items-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* iPad-specific touch target adjustments */
+@media (pointer: coarse) {
+    .m-list-item {
+        min-height: 60px;
+    }
+
+    .m-add-btn {
+        min-height: 48px;
+        min-width: 80px;
+    }
+
+    .m-stepper-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    .m-action-btn {
+        min-height: 54px;
+    }
+
+    .m-tab {
+        min-height: 60px;
+    }
+
+    .m-form-input {
+        padding: 14px 16px;
+        font-size: 16px;  /* prevents iOS zoom on focus */
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Theme Toggle Button
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.header-theme-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    color: #fff;
+}
+
+.header-theme-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.08);
+}
+
+/* ── Header Refresh Button (circular icon) ────────────────────────────── */
+.header-refresh-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+    color: #fff;
+}
+
+.header-refresh-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: rotate(90deg);
+}
+
+.header-refresh-btn:active {
+    transform: rotate(180deg);
+}
+
+.theme-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+}
+
+.theme-icon svg {
+    display: block;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Dark Theme (Plex-inspired)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] {
+    --color-primary:       #e5a00d;
+    --color-primary-dark:  #cc8e0b;
+    --color-secondary:     #8b8b8b;
+    --color-success:       #22c55e;
+    --color-danger:        #ef4444;
+    --color-warning:       #f59e0b;
+    --color-info:          #06b6d4;
+    --color-bg:            #121212;
+    --color-surface:       #1e1e1e;
+    --color-text:          #e8e8e8;
+    --color-text-muted:    #999999;
+    --color-border:        #333333;
+    --radius:              8px;
+    --shadow:              0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+    --shadow-md:           0 4px 6px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* ── Dark: Body & App Shell ───────────────────────────────────────────── */
+[data-theme="dark"] body {
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+
+[data-theme="dark"] .app-header {
+    background: linear-gradient(135deg, #1a1a1a, #252525);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+[data-theme="dark"] .app-footer {
+    background: #0d0d0d;
+    color: #666;
+}
+
+/* ── Dark: Header Controls ────────────────────────────────────────────── */
+[data-theme="dark"] .header-user-info {
+    background: rgba(255,255,255,0.08);
+}
+
+[data-theme="dark"] .header-logout-btn {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+}
+
+[data-theme="dark"] .header-logout-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+[data-theme="dark"] .header-cart-bubble {
+    background: rgba(229, 160, 13, 0.2);
+    border-color: rgba(229, 160, 13, 0.4);
+}
+
+[data-theme="dark"] .header-cart-bubble:hover {
+    background: rgba(229, 160, 13, 0.35);
+}
+
+[data-theme="dark"] .header-theme-btn {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+}
+
+[data-theme="dark"] .header-theme-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+[data-theme="dark"] .header-refresh-btn {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+}
+
+[data-theme="dark"] .header-refresh-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* ── Dark: Login Panel ────────────────────────────────────────────────── */
+[data-theme="dark"] .login-panel {
+    background: var(--color-surface);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+[data-theme="dark"] .login-title h2 {
+    color: var(--color-text);
+}
+
+/* ── Dark: Form Controls ──────────────────────────────────────────────── */
+[data-theme="dark"] .form-control {
+    background: #2a2a2a;
+    border-color: var(--color-border);
+    color: var(--color-text);
+}
+
+[data-theme="dark"] .form-control:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(229, 160, 13, 0.15);
+}
+
+/* ── Dark: Buttons ────────────────────────────────────────────────────── */
+[data-theme="dark"] .btn-primary {
+    background: var(--color-primary);
+    color: #111;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+    background: var(--color-primary-dark);
+}
+
+[data-theme="dark"] .btn-secondary {
+    background: #333;
+    color: var(--color-text);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+    background: #444;
+}
+
+[data-theme="dark"] .btn-refresh {
+    background: var(--color-info);
+    color: #111;
+}
+
+/* ── Dark: Panels (split workspace) ───────────────────────────────────── */
+[data-theme="dark"] .panel {
+    background: var(--color-surface);
+    box-shadow: var(--shadow);
+}
+
+[data-theme="dark"] .panel-title {
+    border-bottom-color: var(--color-border);
+}
+
+/* ── Dark: Data Tables ────────────────────────────────────────────────── */
+[data-theme="dark"] .data-table th {
+    background: #1a1a1a;
+    color: var(--color-text-muted);
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .data-table td {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .data-table tr:hover td {
+    background: #252525;
+}
+
+/* ── Dark: Dashboard Stats ────────────────────────────────────────────── */
+[data-theme="dark"] .stat-card {
+    background: var(--color-surface);
+    box-shadow: var(--shadow);
+}
+
+/* ── Dark: Menu Management ────────────────────────────────────────────── */
+[data-theme="dark"] .menu-item-row {
+    border-bottom-color: #2a2a2a;
+}
+
+[data-theme="dark"] .category-title h4 {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-border);
+}
+
+/* ── Dark: Manager Tabs (Bubble Nav) ──────────────────────────────────── */
+[data-theme="dark"] .manager-tabs .Wt-tabs {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .manager-tabs .Wt-tabs li a {
+    color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .manager-tabs .Wt-tabs li a:hover {
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .manager-tabs .Wt-tabs li.active a {
+    color: #1a1a2e;
+    background: var(--color-primary);
+    box-shadow: 0 2px 8px rgba(229, 160, 13, 0.3);
+}
+
+/* ── Dark: Config Form ────────────────────────────────────────────────── */
+[data-theme="dark"] .form-help-text code {
+    background: rgba(255,255,255,0.1);
+}
+
+[data-theme="dark"] .config-success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+[data-theme="dark"] .config-error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="dark"] .config-info {
+    background: rgba(6, 182, 212, 0.15);
+    color: #06b6d4;
+    border-color: rgba(6, 182, 212, 0.3);
+}
+
+/* ── Dark: Category Tabs (desktop) ────────────────────────────────────── */
+[data-theme="dark"] .btn-category {
+    background: #2a2a2a;
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .btn-category:hover,
+[data-theme="dark"] .btn-category.active {
+    background: var(--color-primary);
+    color: #111;
+    border-color: var(--color-primary);
+}
+
+/* ── Dark: Menu Cards (desktop front desk) ────────────────────────────── */
+[data-theme="dark"] .menu-card {
+    background: #252525;
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .menu-card:hover {
+    border-color: var(--color-primary);
+}
+
+/* ── Dark: Cart ───────────────────────────────────────────────────────── */
+[data-theme="dark"] .cart-header {
+    border-bottom-color: var(--color-border);
+}
+
+/* ── Dark: Order Cards ────────────────────────────────────────────────── */
+[data-theme="dark"] .order-card {
+    background: #252525;
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .order-card-header {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .order-card-footer {
+    border-top-color: var(--color-border);
+}
+
+/* ── Dark: Status Badges ──────────────────────────────────────────────── */
+[data-theme="dark"] .status-pending {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+[data-theme="dark"] .status-progress {
+    background: rgba(6, 182, 212, 0.2);
+    color: #06b6d4;
+}
+
+[data-theme="dark"] .status-ready {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+[data-theme="dark"] .status-served {
+    background: rgba(148, 163, 184, 0.2);
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .status-cancelled {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+/* ── Dark: Kitchen View ───────────────────────────────────────────────── */
+[data-theme="dark"] .pending-card {
+    background: rgba(245, 158, 11, 0.08);
+    border-left-color: var(--color-warning);
+}
+
+[data-theme="dark"] .progress-card {
+    background: rgba(6, 182, 212, 0.08);
+    border-left-color: var(--color-info);
+}
+
+[data-theme="dark"] .kitchen-card-header {
+    border-bottom-color: rgba(255,255,255,0.08);
+}
+
+[data-theme="dark"] .order-notes {
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Dark Theme: Mobile Front Desk Views
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Dark: Tab Bar ────────────────────────────────────────────────────── */
+[data-theme="dark"] .m-tab-bar {
+    background: #1a1a1a;
+    border-top-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-tab {
+    color: #777;
+}
+
+[data-theme="dark"] .m-tab.active {
+    color: var(--color-primary);
+}
+
+/* ── Dark: Screen Headers ─────────────────────────────────────────────── */
+[data-theme="dark"] .m-screen-header {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-back-btn {
+    color: var(--color-primary);
+}
+
+[data-theme="dark"] .m-header-action-btn {
+    background: var(--color-info);
+    color: #111;
+}
+
+/* ── Dark: Category List (phone) ──────────────────────────────────────── */
+[data-theme="dark"] .m-list-item {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-list-item:active {
+    background: #252525;
+}
+
+[data-theme="dark"] .m-list-chevron {
+    color: #555;
+}
+
+/* ── Dark: Split-Panel Categories (tablet) ────────────────────────────── */
+[data-theme="dark"] .m-cat-panel {
+    background: #181818;
+    border-right-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-cat-item {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-cat-item:active {
+    background: #333;
+}
+
+[data-theme="dark"] .m-cat-item.active {
+    background: #252525;
+    border-left-color: var(--color-primary);
+}
+
+[data-theme="dark"] .m-cat-item.active .m-cat-name {
+    color: var(--color-primary);
+}
+
+[data-theme="dark"] .m-cat-count {
+    background: #333;
+    color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .m-cat-item.active .m-cat-count {
+    background: rgba(229, 160, 13, 0.15);
+    color: var(--color-primary);
+}
+
+/* ── Dark: Items Panel ────────────────────────────────────────────────── */
+[data-theme="dark"] .m-items-panel {
+    background: var(--color-bg);
+}
+
+[data-theme="dark"] .m-items-panel-title {
+    border-bottom-color: var(--color-border);
+}
+
+/* ── Dark: Menu Item Cards ────────────────────────────────────────────── */
+[data-theme="dark"] .m-item-card {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-item-card:active {
+    border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .m-add-btn {
+    background: var(--color-primary);
+    color: #111;
+}
+
+[data-theme="dark"] .m-add-btn:active {
+    background: var(--color-primary-dark);
+}
+
+/* ── Dark: Cart Screen ────────────────────────────────────────────────── */
+[data-theme="dark"] .m-cart-row {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-stepper {
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-stepper-btn {
+    background: #2a2a2a;
+    color: var(--color-text);
+}
+
+[data-theme="dark"] .m-stepper-btn:active {
+    background: #3a3a3a;
+}
+
+[data-theme="dark"] .m-cart-footer {
+    border-top-color: var(--color-border);
+}
+
+/* ── Dark: Action Buttons ─────────────────────────────────────────────── */
+[data-theme="dark"] .m-btn-primary {
+    background: var(--color-primary);
+    color: #111;
+}
+
+[data-theme="dark"] .m-btn-secondary {
+    background: #2a2a2a;
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-btn-success {
+    background: var(--color-success);
+    color: #111;
+}
+
+[data-theme="dark"] .m-action-btn-sm.m-btn-success {
+    background: var(--color-success);
+    color: #111;
+}
+
+/* ── Dark: Order Form ─────────────────────────────────────────────────── */
+[data-theme="dark"] .m-form-input {
+    background: #2a2a2a;
+    border-color: var(--color-border);
+    color: var(--color-text);
+}
+
+[data-theme="dark"] .m-form-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(229, 160, 13, 0.15);
+}
+
+[data-theme="dark"] .m-order-summary {
+    background: #252525;
+}
+
+[data-theme="dark"] .m-summary-title {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-summary-total {
+    border-top-color: var(--color-border);
+}
+
+/* ── Dark: Active Orders (mobile) ─────────────────────────────────────── */
+[data-theme="dark"] .m-order-card {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-order-card-header {
+    border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-order-card-footer {
+    border-top-color: var(--color-border);
+}
+
+[data-theme="dark"] .m-status-badge.status-pending {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+[data-theme="dark"] .m-status-badge.status-progress {
+    background: rgba(6, 182, 212, 0.2);
+    color: #06b6d4;
+}
+
+[data-theme="dark"] .m-status-badge.status-ready {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+/* ── Dark: Confirmation Screen ────────────────────────────────────────── */
+[data-theme="dark"] .m-confirm-title {
+    color: var(--color-success);
+}
+
+/* ── Dark: Portrait tablet category panel override ────────────────────── */
+@media (orientation: portrait) and (min-width: 600px) {
+    [data-theme="dark"] .m-cat-panel {
+        background: linear-gradient(180deg, #181818 0%, #1a1a1a 100%);
+        border-right-color: var(--color-border);
+    }
+
+    [data-theme="dark"] .m-cat-item.active {
+        background: #252525;
+        box-shadow: inset 0 0 0 0 transparent, 2px 0 4px rgba(0,0,0,0.2);
+    }
+}
+
+/* ── Dark: Smooth theme transition ────────────────────────────────────── */
+html[data-theme] body,
+html[data-theme] .app-header,
+html[data-theme] .app-footer,
+html[data-theme] .login-panel,
+html[data-theme] .panel,
+html[data-theme] .m-tab-bar,
+html[data-theme] .m-cat-panel,
+html[data-theme] .m-item-card,
+html[data-theme] .m-order-card,
+html[data-theme] .form-control,
+html[data-theme] .m-form-input,
+html[data-theme] .header-theme-btn,
+html[data-theme] .header-refresh-btn {
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+

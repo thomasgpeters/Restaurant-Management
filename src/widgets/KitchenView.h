@@ -6,11 +6,11 @@
 #include <Wt/WTimer.h>
 #include <memory>
 
-#include "../services/ApiService.h"
+#include "../services/IApiService.h"
 
 class KitchenView : public Wt::WContainerWidget {
 public:
-    KitchenView(std::shared_ptr<ApiService> api, long long restaurantId);
+    KitchenView(std::shared_ptr<IApiService> api, long long restaurantId);
 
 private:
     void buildPendingPanel(Wt::WContainerWidget* parent);
@@ -19,7 +19,7 @@ private:
     void acceptOrder(long long orderId);
     void markReady(long long orderId);
 
-    std::shared_ptr<ApiService> api_;
+    std::shared_ptr<IApiService> api_;
     long long restaurantId_;
 
     Wt::WContainerWidget* pendingContainer_ = nullptr;

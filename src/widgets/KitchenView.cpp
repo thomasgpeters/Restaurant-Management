@@ -4,7 +4,7 @@
 #include <sstream>
 #include <iomanip>
 
-KitchenView::KitchenView(std::shared_ptr<ApiService> api, long long restaurantId)
+KitchenView::KitchenView(std::shared_ptr<IApiService> api, long long restaurantId)
     : api_(api), restaurantId_(restaurantId)
 {
     addStyleClass("kitchen-view");
@@ -31,6 +31,9 @@ KitchenView::KitchenView(std::shared_ptr<ApiService> api, long long restaurantId
     rightPanel->addStyleClass("panel right-panel kitchen-inprogress");
     buildInProgressPanel(rightPanel);
 
+    // Initial data load (both containers must exist before calling refresh)
+    refreshOrders();
+
     // Auto-refresh timer (every 10 seconds)
     refreshTimer_ = addChild(std::make_unique<Wt::WTimer>());
     refreshTimer_->setInterval(std::chrono::seconds(10));
@@ -43,7 +46,6 @@ void KitchenView::buildPendingPanel(Wt::WContainerWidget* parent) {
         ->addStyleClass("panel-title");
     pendingContainer_ = parent->addWidget(std::make_unique<Wt::WContainerWidget>());
     pendingContainer_->addStyleClass("kitchen-orders");
-    refreshOrders();
 }
 
 void KitchenView::buildInProgressPanel(Wt::WContainerWidget* parent) {
@@ -57,7 +59,6 @@ void KitchenView::refreshOrders() {
     // Refresh pending
     pendingContainer_->clear();
     {
-        Wt::Dbo::Transaction t(api_->session());
         auto pending = api_->getOrdersByStatus(restaurantId_, "Pending");
 
         if (pending.empty()) {
@@ -66,7 +67,7 @@ void KitchenView::refreshOrders() {
         }
 
         for (auto& order : pending) {
-            long long oid = order.id();
+            long long oid = order.id;
             auto card = pendingContainer_->addWidget(
                 std::make_unique<Wt::WContainerWidget>());
             card->addStyleClass("kitchen-card pending-card");
@@ -76,11 +77,11 @@ void KitchenView::refreshOrders() {
             hdr->addWidget(std::make_unique<Wt::WText>(
                 "Order #" + std::to_string(oid)))->addStyleClass("order-id");
             hdr->addWidget(std::make_unique<Wt::WText>(
-                "Table " + std::to_string(order->table_number)))->addStyleClass("order-table");
+                "Table " + std::to_string(order.table_number)))->addStyleClass("order-table");
 
-            if (!order->notes.empty()) {
+            if (!order.notes.empty()) {
                 auto notesEl = card->addWidget(std::make_unique<Wt::WText>(
-                    "Notes: " + order->notes));
+                    "Notes: " + order.notes));
                 notesEl->addStyleClass("order-notes");
             }
 
@@ -91,12 +92,12 @@ void KitchenView::refreshOrders() {
                 auto line = itemsList->addWidget(std::make_unique<Wt::WContainerWidget>());
                 line->addStyleClass("kitchen-item-line");
                 line->addWidget(std::make_unique<Wt::WText>(
-                    std::to_string(oi->quantity) + "x "));
-                line->addWidget(std::make_unique<Wt::WText>(oi->menu_item->name))
+                    std::to_string(oi.quantity) + "x "));
+                line->addWidget(std::make_unique<Wt::WText>(oi.menu_item_name))
                     ->addStyleClass("item-name-bold");
-                if (!oi->special_instructions.empty()) {
+                if (!oi.special_instructions.empty()) {
                     line->addWidget(std::make_unique<Wt::WText>(
-                        " (" + oi->special_instructions + ")"))
+                        " (" + oi.special_instructions + ")"))
                         ->addStyleClass("item-instructions");
                 }
             }
@@ -111,7 +112,6 @@ void KitchenView::refreshOrders() {
     // Refresh in-progress
     inProgressContainer_->clear();
     {
-        Wt::Dbo::Transaction t(api_->session());
         auto inProgress = api_->getOrdersByStatus(restaurantId_, "In Progress");
 
         if (inProgress.empty()) {
@@ -120,7 +120,7 @@ void KitchenView::refreshOrders() {
         }
 
         for (auto& order : inProgress) {
-            long long oid = order.id();
+            long long oid = order.id;
             auto card = inProgressContainer_->addWidget(
                 std::make_unique<Wt::WContainerWidget>());
             card->addStyleClass("kitchen-card progress-card");
@@ -130,7 +130,7 @@ void KitchenView::refreshOrders() {
             hdr->addWidget(std::make_unique<Wt::WText>(
                 "Order #" + std::to_string(oid)))->addStyleClass("order-id");
             hdr->addWidget(std::make_unique<Wt::WText>(
-                "Table " + std::to_string(order->table_number)))->addStyleClass("order-table");
+                "Table " + std::to_string(order.table_number)))->addStyleClass("order-table");
 
             auto items = api_->getOrderItems(oid);
             auto itemsList = card->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -139,8 +139,8 @@ void KitchenView::refreshOrders() {
                 auto line = itemsList->addWidget(std::make_unique<Wt::WContainerWidget>());
                 line->addStyleClass("kitchen-item-line");
                 line->addWidget(std::make_unique<Wt::WText>(
-                    std::to_string(oi->quantity) + "x "));
-                line->addWidget(std::make_unique<Wt::WText>(oi->menu_item->name))
+                    std::to_string(oi.quantity) + "x "));
+                line->addWidget(std::make_unique<Wt::WText>(oi.menu_item_name))
                     ->addStyleClass("item-name-bold");
             }
 
